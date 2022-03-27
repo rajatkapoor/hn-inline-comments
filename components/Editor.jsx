@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import convertEditableHTMLToMarkdown from "../utils/convertEditableHTMLToMarkdown";
-import convertTextToHtml from "../utils/convertTextToHtml";
-import replaceHNCommentsWithSpans from "../utils/replaceHNCommentsWithSpans";
+import convertMarkdownToEditableHTML from "../utils/convertMarkdownToEditableHTML";
 
 const markdown = `
   :hn-comment[Video of a cat in a box]{data-comment-id="12345"} ok ok 
@@ -9,16 +8,12 @@ const markdown = `
 
 const Editor = () => {
   const editorRef = useRef();
-  const markdownAsHtmlWithCommentSpans = replaceHNCommentsWithSpans(markdown);
-  const editableHtml = convertTextToHtml(markdownAsHtmlWithCommentSpans);
+  const editableHtml = convertMarkdownToEditableHTML(markdown);
   const handleSaveClick = async (e) => {
     const html = editorRef.current.innerHTML;
 
     const markdown = convertEditableHTMLToMarkdown(html);
-    console.log(
-      "🚀 ~ file: Editor.jsx ~ line 19 ~ handleSaveClick ~ markdown",
-      markdown
-    );
+    //@todo: send this markdown to server
   };
 
   return (
