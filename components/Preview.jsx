@@ -8,7 +8,7 @@ const markdown2 = `
   :hn-comment[Video of a cat in a box]{data-comment-id=12345} ok ok 
 `;
 
-const EditorNew = () => {
+const Preview = () => {
   return (
     <Remark
       remarkPlugins={[remarkDirective, hashnodeCommentPlugin]}
@@ -33,4 +33,4 @@ const EditorNew = () => {
   );
 };
 
-export default EditorNew;
+export default Preview;
