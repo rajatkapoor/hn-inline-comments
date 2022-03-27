@@ -1,8 +1,8 @@
 import React from "react";
-import Preview from "../../components/Preview";
+import Editor from "../../components/Editor";
 
 const EditPage = () => {
-  return <Preview />;
+  return <Editor />;
 };
 
 export default EditPage;
