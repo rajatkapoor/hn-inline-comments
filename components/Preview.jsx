@@ -5,7 +5,14 @@ import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
 
 const markdown2 = `
 # this is a heading
-  :hn-comment[Video of a cat in a box]{data-comment-id=12345} ok ok 
+
+AKJSNDFKJN 
+a
+sd
+fa
+s
+
+  :hn-comment[Video of a cat in a box]{data-comment-id="12345"} ok ok 
 `;
 
 const Preview = () => {

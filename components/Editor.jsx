@@ -1,7 +1,10 @@
 import React from "react";
+import replaceHNCommentsWithSpans from "../utils/replaceHNCommentsWithSpans";
+import convertTextToHtml from "../utils/convertTextToHtml";
 
-const markdown2 = `
+const markdown = `
 # this is a heading
+
 AKJSNDFKJN 
 a
 sd
@@ -11,31 +14,16 @@ s
   :hn-comment[Video of a cat in a box]{data-comment-id="12345"} ok ok 
 `;
 
-const replaceComments = (text) => {
-  const regex = /:hn-comment\[(.*?)\]\{data-comment-id="(.*?)"\}/g;
-  let match;
-  let newText = text;
-  while ((match = regex.exec(text))) {
-    newText = newText.replace(
-      match[0],
-      `<span data-comment-id="${match[2]}">${match[1]}</span>`
-    );
-  }
-  return newText;
-};
-
 const Editor = () => {
-  const markdownAsHtmlWithCommentSpans = replaceComments(markdown2);
-  console.log(
-    "🚀 ~ file: Editor.jsx ~ line 30 ~ Editor ~ markdownAsHtmlWithCommentSpans",
-    markdownAsHtmlWithCommentSpans
-  );
+  const markdownAsHtmlWithCommentSpans = replaceHNCommentsWithSpans(markdown);
   return (
     <div>
       <div
         contentEditable={true}
-        dangerouslySetInnerHTML={{ __html: markdownAsHtmlWithCommentSpans }}
-      ></div>
+        dangerouslySetInnerHTML={{
+          __html: convertTextToHtml(markdownAsHtmlWithCommentSpans),
+        }}
+      />
     </div>
   );
 };
