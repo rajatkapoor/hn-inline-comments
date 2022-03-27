@@ -13,6 +13,7 @@
     "micromark": "^3.0.10",
     "micromark-extension-directive": "^2.1.1",
     "next": "12.1.1",
+    "parse5": "^6.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-remark": "^2.1.0",
@@ -20,6 +21,7 @@
     "rehype-remark": "^9.1.2",
     "remark-directive": "^2.0.1",
     "remark-stringify": "^10.0.2",
+    "sanitize-html": "^2.7.0",
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.0"
   },
