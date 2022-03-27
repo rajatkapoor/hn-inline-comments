@@ -7,20 +7,15 @@ const WithInlineComments = (node, props) => {
   };
 
   const onMouseDown = (e) => {
-    console.log(
-      "🚀 ~ file: WithInlineComments.jsx ~ line 13 ~ onMouseDown ~ e",
-      e
-    );
+    //@todo: Add some details somewhere to capture the current node
   };
+
   const onMouseUp = (e) => {
-    console.log(
-      "🚀 ~ file: WithInlineComments.jsx ~ line 13 ~ onMouseDown ~ e",
-      e
-    );
-    console.log(node);
+    //@todo: Check whether this ends up being in the same node and if commenting is possible
+
     const { anchorOffset, focusOffset } = window.getSelection();
     console.log(
-      "🚀 ~ file: WithInlineComments.jsx ~ line 48 ~ onMouseUp ~ anchorOffset, focusOffset",
+      "🚀 ~ file: WithInlineComments.jsx ~ line 43 ~ onMouseUp ~ anchorOffset, focusOffset ",
       anchorOffset,
       focusOffset
     );
