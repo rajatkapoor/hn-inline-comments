@@ -1,7 +1,8 @@
 import React from "react";
+import Editor from "../../components/Editor";
 
 const EditPage = () => {
-  return <div>[id]</div>;
+  return <Editor />;
 };
 
 export default EditPage;
