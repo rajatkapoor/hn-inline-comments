@@ -39,49 +39,6 @@ const WithInlineComments = (node, props, setMarkdown) => {
       sel.addRange(range);
     }
   };
-  const addComment = async (commentId) => {
-    const newHtml = document.querySelector(".post-preview").innerHTML;
-    const file = await unified()
-      .use(rehypeParse)
-
-      .use(rehypeRemark, {
-        handlers: {
-          ["span"]: (h, node, parent) => {
-            if (!!node.properties.dataCommentId) {
-              const { dataCommentId } = node.properties;
-
-              const commentNode = h(
-                node,
-                "textDirective",
-                {
-                  name: "hn-comment",
-                  attributes: {
-                    "data-comment-id": dataCommentId,
-                  },
-                },
-
-                all(h, node)
-              );
-              return commentNode;
-            }
-
-            return all(h, node);
-          },
-        },
-      })
-      .use(remarkDirective)
-      .use(hashnodeCommentPlugin)
-      .use(remarkStringify)
-      .process(newHtml);
-
-    const markdown = String(file);
-    console.log(
-      "🚀 ~ file: WithInlineComments.jsx ~ line 83 ~ addComment ~ markdown",
-      markdown
-    );
-
-    setMarkdown(markdown);
-  };
 
   const Element = React.createElement(node.tagName, {
     ...props,
