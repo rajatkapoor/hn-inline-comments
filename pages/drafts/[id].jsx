@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useEffect, useState } from "react";
 import Editor from "../../components/Editor";
+import Preview from "../../components/Preview";
 import Title from "../../components/Title";
 import { getPost } from "../../services/post.service";
 
@@ -33,7 +34,7 @@ const EditPage = () => {
       {post && (
         <Stack>
           <Title></Title>
-          <Tabs isLazy>
+          <Tabs>
             <TabList>
               <Tab>Write</Tab>
               <Tab>Preview</Tab>
@@ -43,7 +44,7 @@ const EditPage = () => {
                 <Editor {...post} />
               </TabPanel>
               <TabPanel>
-                <p>two!</p>
+                <Preview {...post} />
               </TabPanel>
             </TabPanels>
           </Tabs>

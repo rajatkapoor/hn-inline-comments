@@ -2,26 +2,14 @@ import { Remark } from "react-remark";
 import WithInlineComments from "./WithInlineComments";
 import remarkDirective from "remark-directive";
 import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-const markdown2 = `
-
-# title
-this is a Vi **deo** of a cat in a box ok ok
-
-`;
-
-const Preview = () => {
-  const [markdown, setMarkdown] = useState(markdown2);
-  console.log(
-    "🚀 ~ file: Preview.jsx ~ line 16 ~ Preview ~ markdown",
-    markdown
-  );
-
+const Preview = ({ content, id }) => {
+  const [markDown, setMarkdown] = useState(content);
   return (
     <div className="post-preview">
       <Remark
-        key={markdown}
+        key={markDown}
         remarkPlugins={[remarkDirective, hashnodeCommentPlugin]}
         remarkToRehypeOptions={{ allowDangerousHtml: true }}
         rehypeReactOptions={{
@@ -39,7 +27,7 @@ const Preview = () => {
           },
         }}
       >
-        {markdown}
+        {markDown}
       </Remark>
     </div>
   );
