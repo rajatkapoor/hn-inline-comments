@@ -38,6 +38,7 @@ const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
     onMouseDown,
     onMouseUp,
   });
+
   return (
     <>
       {Element}

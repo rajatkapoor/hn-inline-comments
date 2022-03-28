@@ -14,7 +14,10 @@ import { useFormik } from "formik";
 import React from "react";
 import { postComment } from "../services/comment.service";
 
-const CommentsDrawer = ({ addCommentToCurrentDoc }) => {
+const CommentsDrawer = ({
+  buttonText = "Add Comments",
+  addCommentToCurrentDoc,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { values, handleChange, handleSubmit, setFieldValue, resetForm } =
     useFormik({
@@ -31,7 +34,7 @@ const CommentsDrawer = ({ addCommentToCurrentDoc }) => {
   return (
     <>
       <Button onClick={onOpen} pos="relative">
-        Add Comment
+        {buttonText}
       </Button>
       <Drawer isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />

@@ -3,6 +3,7 @@ import remarkDirective from "remark-directive";
 import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
 import { usePost } from "../stores/post.store";
 import getMarkdownFromHTML from "../utils/getMarkdownFromHTML";
+import CommentSpan from "./CommentSpan";
 import WithInlineComments from "./WithInlineComments";
 
 const Preview = () => {
@@ -33,7 +34,14 @@ const Preview = () => {
               return WithInlineComments(node, props, addCommentToCurrentDoc);
             },
             ["hn-comment"]: ({ node, ...props }) => {
-              return <span style={{ backgroundColor: "yellow" }} {...props} />;
+              return (
+                <CommentSpan {...props} />
+                // <span
+                //   style={{ backgroundColor: "yellow" }}
+                //   {...props}
+                //   onClick
+                // />
+              );
             },
           },
         }}
