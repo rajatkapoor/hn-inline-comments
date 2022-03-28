@@ -1,6 +1,8 @@
 import { useRef } from "react";
 import convertEditableHTMLToMarkdown from "../utils/convertEditableHTMLToMarkdown";
 import convertMarkdownToEditableHTML from "../utils/convertMarkdownToEditableHTML";
+import { database, posts } from "../utils/firebase";
+import { addDoc, collection } from "firebase/firestore";
 
 const markdown = `
   :hn-comment[Video of a cat in a box]{data-comment-id="12345"} ok ok 
@@ -14,6 +16,16 @@ const Editor = () => {
 
     const markdown = convertEditableHTMLToMarkdown(html);
     //@todo: send this markdown to server
+    // db.collection("posts").doc("12345").set({
+    //   content: markdown,
+    // });
+    const data = await addDoc(posts, {
+      content: markdown,
+    });
+    console.log(
+      "🚀 ~ file: Editor.jsx ~ line 25 ~ handleSaveClick ~ data",
+      data.id
+    );
   };
 
   return (
