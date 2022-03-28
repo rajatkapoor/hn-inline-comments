@@ -1,43 +1,30 @@
-import { Button, Heading, HStack, Stack, Text } from "@chakra-ui/react";
-import { getDocs } from "firebase/firestore";
+import { Heading, Spinner, Stack, StackDivider } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { posts as postsCollection } from "../utils/firebase";
+import PostCard from "../components/PostCard";
+import useLoading from "../hooks/useLoading";
+import { getPosts } from "../services/post.service";
 
 export default function Home() {
+  const { isLoading, stopLoading } = useLoading();
   const [posts, setPosts] = useState([]);
+
   useEffect(() => {
-    getDocs(postsCollection).then((res) => {
-      const docs = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      setPosts(docs);
+    getPosts().then((posts) => {
+      setPosts(posts);
+      stopLoading();
     });
   }, []);
 
   return (
     <Stack>
       <Heading>Your posts</Heading>
-      <Stack>
-        {posts.map((post) => {
-          return (
-            <HStack key={post.id} justifyContent="space-between">
-              <Stack>
-                <Heading size={"md"}>{post.id}</Heading>
-                <Text isTruncated>{post.content}</Text>
-              </Stack>
-              <HStack>
-                <Button
-                  colorScheme={"blue"}
-                  variant={"outline"}
-                  rounded={"3xl"}
-                >
-                  Continue writing
-                </Button>
-                <Button variant={"ghost"} colorScheme="red">
-                  Delete
-                </Button>
-              </HStack>
-            </HStack>
-          );
-        })}
+      {isLoading && <Spinner />}
+      <Stack divider={<StackDivider />}>
+        {!isLoading &&
+          posts.map((post) => {
+            return <PostCard key={post.id} {...post} />;
+          })}
       </Stack>
     </Stack>
   );
