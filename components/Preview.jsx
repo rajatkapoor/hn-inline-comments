@@ -4,6 +4,7 @@ import remarkDirective from "remark-directive";
 import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
 import { useState } from "react";
 import { usePost } from "../stores/post.store";
+import getMarkdownFromHTML from "../utils/getMarkdownFromHTML";
 
 const Preview = () => {
   const {
@@ -13,6 +14,10 @@ const Preview = () => {
   } = usePost();
   const updateCurrentDoc = (content) => {
     updateContent(id, content);
+  };
+  const addCommentToCurrentDoc = async (commentId) => {
+    const content = await getMarkdownFromHTML(commentId);
+    await updateContent(id, content);
   };
 
   return (
