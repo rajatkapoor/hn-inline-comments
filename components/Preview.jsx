@@ -11,6 +11,9 @@ const Preview = () => {
     id,
     updateContent,
   } = usePost();
+  const updateCurrentDoc = (content) => {
+    updateContent(id, content);
+  };
 
   return (
     <div className="post-preview">
@@ -22,7 +25,7 @@ const Preview = () => {
           passNode: true,
           components: {
             p: ({ node, ...props }) => {
-              return WithInlineComments(node, props, updateContent);
+              return WithInlineComments(node, props, updateCurrentDoc);
             },
             strong: ({ node, ...props }) => {
               return WithInlineComments(node, props, updateContent);
