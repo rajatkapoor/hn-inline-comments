@@ -1,8 +1,9 @@
-import { Button, useToast } from "@chakra-ui/react";
+import { Button, Stack, useToast } from "@chakra-ui/react";
 import { useRef } from "react";
 import { updatePost } from "../services/post.service";
 import convertEditableHTMLToMarkdown from "../utils/convertEditableHTMLToMarkdown";
 import convertMarkdownToEditableHTML from "../utils/convertMarkdownToEditableHTML";
+import Title from "./Title";
 
 const Editor = (post) => {
   const { content, id } = post;
@@ -23,7 +24,7 @@ const Editor = (post) => {
   };
 
   return (
-    <div>
+    <Stack>
       <div
         contentEditable={true}
         dangerouslySetInnerHTML={{
@@ -37,7 +38,7 @@ const Editor = (post) => {
         }}
       />
       <Button onClick={handleSaveClick}>save</Button>
-    </div>
+    </Stack>
   );
 };
 

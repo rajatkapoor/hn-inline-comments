@@ -17,7 +17,7 @@ const PostCard = ({ id, content }) => {
           colorScheme={"blue"}
           variant={"outline"}
           rounded={"3xl"}
-          onClick={() => router.push(`/edit/${id}`)}
+          onClick={() => router.push(`/drafts/${id}`)}
         >
           Continue writing
         </Button>
