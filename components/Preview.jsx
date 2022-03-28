@@ -1,10 +1,9 @@
 import { Remark } from "react-remark";
-import WithInlineComments from "./WithInlineComments";
 import remarkDirective from "remark-directive";
 import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
-import { useState } from "react";
 import { usePost } from "../stores/post.store";
 import getMarkdownFromHTML from "../utils/getMarkdownFromHTML";
+import WithInlineComments from "./WithInlineComments";
 
 const Preview = () => {
   const {
@@ -12,9 +11,7 @@ const Preview = () => {
     id,
     updateContent,
   } = usePost();
-  const updateCurrentDoc = (content) => {
-    updateContent(id, content);
-  };
+
   const addCommentToCurrentDoc = async (commentId) => {
     const content = await getMarkdownFromHTML(commentId);
     await updateContent(id, content);
@@ -30,10 +27,10 @@ const Preview = () => {
           passNode: true,
           components: {
             p: ({ node, ...props }) => {
-              return WithInlineComments(node, props, updateCurrentDoc);
+              return WithInlineComments(node, props, addCommentToCurrentDoc);
             },
             strong: ({ node, ...props }) => {
-              return WithInlineComments(node, props, updateContent);
+              return WithInlineComments(node, props, addCommentToCurrentDoc);
             },
             ["hn-comment"]: ({ node, ...props }) => {
               return <span style={{ backgroundColor: "yellow" }} {...props} />;

@@ -1,17 +1,10 @@
 // import { h } from "hastscript";
-import { Box, Button, Portal } from "@chakra-ui/react";
-import { all } from "hast-util-to-mdast";
+import { Box, Portal } from "@chakra-ui/react";
 import React, { useState } from "react";
-import rehypeParse from "rehype-parse";
-import rehypeRemark from "rehype-remark";
-import remarkDirective from "remark-directive";
-import remarkStringify from "remark-stringify";
-import { unified } from "unified";
-import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
 import CommentsDrawer from "./CommentsDrawer";
 
 // eslint-disable-next-line react/display-name
-const WithInlineComments = (node, props, setMarkdown) => {
+const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
   const [addCommentBoxPosition, setAddCommentBoxPosition] = useState([
     -1000, -1000,
   ]);
@@ -55,7 +48,7 @@ const WithInlineComments = (node, props, setMarkdown) => {
           top={addCommentBoxPosition[0]}
           left={addCommentBoxPosition[1]}
         >
-          <CommentsDrawer addComment={addComment} />
+          <CommentsDrawer addCommentToCurrentDoc={addCommentToCurrentDoc} />
         </Box>
       </Portal>
     </>

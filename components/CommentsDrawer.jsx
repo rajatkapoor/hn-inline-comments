@@ -10,10 +10,24 @@ import {
   DrawerCloseButton,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useFormik } from "formik";
 import React from "react";
+import { postComment } from "../services/comment.service";
 
-const CommentsDrawer = ({ addComment }) => {
+const CommentsDrawer = ({ addCommentToCurrentDoc }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { values, handleChange, handleSubmit, setFieldValue, resetForm } =
+    useFormik({
+      initialValues: { text: "" },
+      onSubmit: async (values) => {
+        const commentId = await postComment(values.text);
+        await addCommentToCurrentDoc(commentId);
+        resetForm();
+        // also notify user that the comment was added
+        onClose();
+      },
+    });
+
   return (
     <>
       <Button onClick={onOpen} pos="relative">
@@ -26,14 +40,13 @@ const CommentsDrawer = ({ addComment }) => {
           <DrawerHeader>Add a comment</DrawerHeader>
 
           <DrawerBody>
-            <form
-              id="my-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                addComment("id-from-firebase");
-              }}
-            >
-              <Input name="text" placeholder="Type comment here..." />
+            <form id="my-form" onSubmit={handleSubmit}>
+              <Input
+                name="text"
+                placeholder="Type comment here..."
+                defaultValue={values.text}
+                onChange={handleChange}
+              />
             </form>
           </DrawerBody>
 
