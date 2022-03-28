@@ -9,11 +9,8 @@ const Preview = () => {
   const {
     post: { content },
     id,
-    updatePost,
+    updateContent,
   } = usePost();
-  const updatePostContent = (updatedContent) => {
-    updatePost(id, { ...post, content: updatedContent });
-  };
 
   return (
     <div className="post-preview">
@@ -25,10 +22,10 @@ const Preview = () => {
           passNode: true,
           components: {
             p: ({ node, ...props }) => {
-              return WithInlineComments(node, props, updatePostContent);
+              return WithInlineComments(node, props, updateContent);
             },
             strong: ({ node, ...props }) => {
-              return WithInlineComments(node, props, updatePostContent);
+              return WithInlineComments(node, props, updateContent);
             },
             ["hn-comment"]: ({ node, ...props }) => {
               return <span style={{ backgroundColor: "yellow" }} {...props} />;
