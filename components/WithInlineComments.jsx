@@ -39,7 +39,7 @@ const WithInlineComments = (node, props, setMarkdown) => {
       sel.addRange(range);
     }
   };
-  const addComment = async () => {
+  const addComment = async (commentId) => {
     const newHtml = document.querySelector(".post-preview").innerHTML;
     const file = await unified()
       .use(rehypeParse)

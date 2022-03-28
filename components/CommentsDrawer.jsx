@@ -30,7 +30,7 @@ const CommentsDrawer = ({ addComment }) => {
               id="my-form"
               onSubmit={(e) => {
                 e.preventDefault();
-                addComment();
+                addComment("id-from-firebase");
               }}
             >
               <Input name="text" placeholder="Type comment here..." />
