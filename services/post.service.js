@@ -1,4 +1,4 @@
-import { getDoc, doc, updateDoc, getDocs } from "firebase/firestore";
+import { getDoc, doc, updateDoc, getDocs, setDoc } from "firebase/firestore";
 import { db, postsCollection } from "../utils/firebase";
 
 export const getPosts = async () => {
@@ -15,16 +15,14 @@ export const getPost = async (id) => {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    return { ...docSnap.data(), id, err: null };
+    return { post: docSnap.data(), id, err: null };
   } else {
-    return { err: new Error("Post not found") };
+    return { post: null, id, err: new Error("Post not found") };
   }
 };
 
-export const updatePost = async (id, content) => {
+export const updatePost = async (id, post) => {
   const docRef = doc(db, "posts", id);
-  await updateDoc(docRef, {
-    content,
-  });
+  await updateDoc(docRef, post);
   return true;
 };

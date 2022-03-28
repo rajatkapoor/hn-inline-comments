@@ -1,4 +1,5 @@
 // import { h } from "hastscript";
+import { Button } from "@chakra-ui/react";
 import { all } from "hast-util-to-mdast";
 import React, { useState } from "react";
 import rehypeParse from "rehype-parse";
@@ -87,7 +88,7 @@ const WithInlineComments = (node, props, setMarkdown) => {
       {Element}
       {showCommentBox && (
         <Portal>
-          <button onClick={addComment}>add comment</button>
+          <Button onClick={addComment}>add comment</Button>
         </Portal>
       )}
     </>

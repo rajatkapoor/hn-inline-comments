@@ -1,19 +1,28 @@
-import { Button, Stack, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Input,
+  Stack,
+  Textarea,
+  useToast,
+} from "@chakra-ui/react";
 import { useRef } from "react";
-import { updatePost } from "../services/post.service";
+// import { updatePost } from "../services/post.service";
+import { usePost } from "../stores/post.store";
 import convertEditableHTMLToMarkdown from "../utils/convertEditableHTMLToMarkdown";
 import convertMarkdownToEditableHTML from "../utils/convertMarkdownToEditableHTML";
-import Title from "./Title";
 
-const Editor = (post) => {
-  const { content, id } = post;
+const Editor = () => {
+  const { post, id, updateContent } = usePost();
+  const { content } = post;
   const toast = useToast();
   const editorRef = useRef();
   const editableHtml = convertMarkdownToEditableHTML(content);
+
   const handleSaveClick = async () => {
     const html = editorRef.current.innerHTML;
     const markdown = convertEditableHTMLToMarkdown(html);
-    await updatePost(id, markdown);
+    await updateContent(id, markdown);
     toast({
       title: "Post updated",
       description: "Your post has been updated",
@@ -25,7 +34,7 @@ const Editor = (post) => {
 
   return (
     <Stack>
-      <div
+      <Box
         contentEditable={true}
         dangerouslySetInnerHTML={{
           __html: editableHtml,

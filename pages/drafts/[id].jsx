@@ -15,14 +15,20 @@ import Editor from "../../components/Editor";
 import Preview from "../../components/Preview";
 import Title from "../../components/Title";
 import { getPost } from "../../services/post.service";
+import { PostProvider } from "../../stores/post.store";
 
 const EditPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [post, setPost] = useState(null);
   useEffect(() => {
-    if (id) {
-      getPost(id).then((post) => {
+    if (id === "new") {
+      setPost({
+        title: "",
+        content: "",
+      });
+    } else if (id) {
+      getPost(id).then(({ post }) => {
         setPost(post);
       });
     }
@@ -32,23 +38,25 @@ const EditPage = () => {
     <Box>
       {!post && <Spinner />}
       {post && (
-        <Stack>
-          <Title></Title>
-          <Tabs>
-            <TabList>
-              <Tab>Write</Tab>
-              <Tab>Preview</Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <Editor {...post} />
-              </TabPanel>
-              <TabPanel>
-                <Preview {...post} />
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </Stack>
+        <PostProvider id={id} post={post}>
+          <Stack>
+            <Title></Title>
+            <Tabs>
+              <TabList>
+                <Tab>Write</Tab>
+                <Tab>Preview</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <Editor />
+                </TabPanel>
+                <TabPanel>
+                  <Preview />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          </Stack>
+        </PostProvider>
       )}
     </Box>
   );
