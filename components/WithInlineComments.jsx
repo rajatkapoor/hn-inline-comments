@@ -1,5 +1,5 @@
 // import { h } from "hastscript";
-import { Button } from "@chakra-ui/react";
+import { Button, Portal } from "@chakra-ui/react";
 import { all } from "hast-util-to-mdast";
 import React, { useState } from "react";
 import rehypeParse from "rehype-parse";
@@ -8,13 +8,10 @@ import remarkDirective from "remark-directive";
 import remarkStringify from "remark-stringify";
 import { unified } from "unified";
 import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
-import Portal from "./Portal";
 
 // eslint-disable-next-line react/display-name
 const WithInlineComments = (node, props, setMarkdown) => {
   const [showCommentBox, setShowCommentBox] = useState(false);
-  // const style = {
-  //   border: "1px solid red",
   // };
 
   const onMouseDown = (e) => {
