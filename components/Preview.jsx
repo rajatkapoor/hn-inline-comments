@@ -2,41 +2,46 @@ import { Remark } from "react-remark";
 import WithInlineComments from "./WithInlineComments";
 import remarkDirective from "remark-directive";
 import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
+import { useState, useEffect } from "react";
 
 const markdown2 = `
-# this is a heading
 
-AKJSNDFKJN 
-a
-sd
-fa
-s
+# title
+this is a Vi **deo** of a cat in a box ok ok
 
-  :hn-comment[Video of a cat in a box]{data-comment-id="12345"} ok ok 
 `;
 
 const Preview = () => {
+  const [markdown, setMarkdown] = useState(markdown2);
+  console.log(
+    "🚀 ~ file: Preview.jsx ~ line 16 ~ Preview ~ markdown",
+    markdown
+  );
+
   return (
-    <Remark
-      remarkPlugins={[remarkDirective, hashnodeCommentPlugin]}
-      remarkToRehypeOptions={{ allowDangerousHtml: true }}
-      rehypeReactOptions={{
-        passNode: true,
-        components: {
-          p: ({ node, ...props }) => {
-            return WithInlineComments(node, props);
+    <div className="post-preview">
+      <Remark
+        key={markdown}
+        remarkPlugins={[remarkDirective, hashnodeCommentPlugin]}
+        remarkToRehypeOptions={{ allowDangerousHtml: true }}
+        rehypeReactOptions={{
+          passNode: true,
+          components: {
+            p: ({ node, ...props }) => {
+              return WithInlineComments(node, props, setMarkdown);
+            },
+            strong: ({ node, ...props }) => {
+              return WithInlineComments(node, props, setMarkdown);
+            },
+            ["hn-comment"]: ({ node, ...props }) => {
+              return <span style={{ backgroundColor: "yellow" }} {...props} />;
+            },
           },
-          strong: ({ node, ...props }) => {
-            return WithInlineComments(node, props);
-          },
-          ["hn-comment"]: ({ node, ...props }) => {
-            return <span style={{ backgroundColor: "yellow" }} {...props} />;
-          },
-        },
-      }}
-    >
-      {markdown2}
-    </Remark>
+        }}
+      >
+        {markdown}
+      </Remark>
+    </div>
   );
 };
 
