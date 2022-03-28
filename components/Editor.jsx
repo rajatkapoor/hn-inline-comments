@@ -1,31 +1,25 @@
+import { Button, useToast } from "@chakra-ui/react";
 import { useRef } from "react";
+import { updatePost } from "../services/post.service";
 import convertEditableHTMLToMarkdown from "../utils/convertEditableHTMLToMarkdown";
 import convertMarkdownToEditableHTML from "../utils/convertMarkdownToEditableHTML";
-import { database, posts } from "../utils/firebase";
-import { addDoc, collection } from "firebase/firestore";
 
-const markdown = `
-  :hn-comment[Video of a cat in a box]{data-comment-id="12345"} ok ok 
-`;
-
-const Editor = () => {
+const Editor = (post) => {
+  const { content, id } = post;
+  const toast = useToast();
   const editorRef = useRef();
-  const editableHtml = convertMarkdownToEditableHTML(markdown);
-  const handleSaveClick = async (e) => {
+  const editableHtml = convertMarkdownToEditableHTML(content);
+  const handleSaveClick = async () => {
     const html = editorRef.current.innerHTML;
-
     const markdown = convertEditableHTMLToMarkdown(html);
-    //@todo: send this markdown to server
-    // db.collection("posts").doc("12345").set({
-    //   content: markdown,
-    // });
-    const data = await addDoc(posts, {
-      content: markdown,
+    await updatePost(id, markdown);
+    toast({
+      title: "Post updated",
+      description: "Your post has been updated",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
     });
-    console.log(
-      "🚀 ~ file: Editor.jsx ~ line 25 ~ handleSaveClick ~ data",
-      data.id
-    );
   };
 
   return (
@@ -42,7 +36,7 @@ const Editor = () => {
           padding: "10px",
         }}
       />
-      <button onClick={handleSaveClick}>save</button>
+      <Button onClick={handleSaveClick}>save</Button>
     </div>
   );
 };
