@@ -49,7 +49,7 @@ const Preview = () => {
                     addCommentToCurrentDoc
                   );
                 },
-                ["hn-comment"]: ({ node, ...props }) => {
+                ["hn-comment-thread"]: ({ node, ...props }) => {
                   return <CommentSpan {...props} />;
                 },
               },

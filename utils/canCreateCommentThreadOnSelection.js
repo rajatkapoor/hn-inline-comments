@@ -1,4 +1,4 @@
-const canCreateCommentOnSelection = () => {
+const canCreateCommentThreadOnSelection = () => {
   const sel = window.getSelection();
   const { anchorOffset, focusOffset } = sel;
   if (sel.rangeCount && anchorOffset !== focusOffset) {
@@ -8,4 +8,4 @@ const canCreateCommentOnSelection = () => {
   }
 };
 
-export default canCreateCommentOnSelection;
+export default canCreateCommentThreadOnSelection;

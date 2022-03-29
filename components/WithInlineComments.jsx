@@ -1,7 +1,7 @@
 // import { h } from "hastscript";
 import React, { useContext } from "react";
-import canCreateCommentOnSelection from "../utils/canCreateCommentOnSelection";
-import createTempComment from "../utils/createTempComment";
+import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
+import createTempCommentThread from "../utils/createTempCommentThread";
 import { CommentsDrawerContext } from "./CommentsDrawer";
 
 // eslint-disable-next-line react/display-name
@@ -16,8 +16,8 @@ const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
   const onMouseUp = async (e) => {
     //@todo: Check whether this ends up being in the same node and if commenting is possible
 
-    if (canCreateCommentOnSelection()) {
-      // const rect = createTempComment(commentSpan);
+    if (canCreateCommentThreadOnSelection()) {
+      // const rect = createTempCommentThread(commentSpan);
       const sel = window.getSelection();
       const range = sel.getRangeAt(0).cloneRange();
       const rect = range.getBoundingClientRect();

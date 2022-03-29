@@ -1,4 +1,4 @@
-const createTempComment = () => {
+const createTempCommentThread = () => {
   const commentSpan = document.createElement("span");
 
   commentSpan.dataset.commentId = "temp";
@@ -13,4 +13,4 @@ const createTempComment = () => {
   return rect;
 };
 
-export default createTempComment;
+export default createTempCommentThread;

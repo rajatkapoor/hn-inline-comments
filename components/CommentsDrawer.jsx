@@ -14,8 +14,8 @@ import {
 import { useFormik } from "formik";
 import React, { createContext, useContext, useState, useRef } from "react";
 import { postComment } from "../services/comment.service";
-import createTempComment from "../utils/createTempComment";
-import canCreateCommentOnSelection from "../utils/canCreateCommentOnSelection";
+import createTempCommentThread from "../utils/createTempCommentThread";
+import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
 
 export const CommentsDrawerContext = createContext();
 
@@ -85,8 +85,8 @@ const CommentsDrawer = ({ addCommentToCurrentDoc }) => {
     >
       <Button
         onClick={() => {
-          if (canCreateCommentOnSelection()) {
-            createTempComment();
+          if (canCreateCommentThreadOnSelection()) {
+            createTempCommentThread();
           }
           onOpen();
         }}

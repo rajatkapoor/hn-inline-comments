@@ -14,16 +14,16 @@ const getMarkdownFromHTML = async (commentId) => {
     .use(rehypeRemark, {
       handlers: {
         ["span"]: (h, node, parent) => {
-          if (!!node.properties.dataCommentId) {
-            const { dataCommentId } = node.properties;
+          if (!!node.properties.dataCommentThreadId) {
+            const { dataCommentThreadId } = node.properties;
 
             const commentNode = h(
               node,
               "textDirective",
               {
-                name: "hn-comment",
+                name: "hn-comment-thread",
                 attributes: {
-                  "data-comment-id": commentId,
+                  "data-comment-thread-id": commentId,
                 },
               },
 
