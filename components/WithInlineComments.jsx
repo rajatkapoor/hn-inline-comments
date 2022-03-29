@@ -23,7 +23,7 @@ const WithInlineComments = (node, props) => {
       updateSelection(sel);
       const range = sel.getRangeAt(0).cloneRange();
       const rect = range.getBoundingClientRect();
-      showCommentButton(MODE.ADD, [rect.top - 50, rect.left], 5000);
+      showCommentButton("temp", [rect.top - 50, rect.left], 5000);
     }
   };
 

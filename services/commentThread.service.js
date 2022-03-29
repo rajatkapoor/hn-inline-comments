@@ -14,13 +14,35 @@ export const createCommentThread = async (data) => {
   return docSnap.id;
 };
 
-export const addCommentToCommentThread = async (commentId, threadId) => {
-  const docSnap = await updateDoc(commentThreadsCollection, threadId, {
-    comments: [
-      ...(await getDoc(commentThreadsCollection, threadId).comments),
-      commentId,
-    ],
-  });
+export const getCommentThread = async (id) => {
+  const docRef = doc(db, "commentThreads", id);
+  const docSnap = await getDoc(docRef);
 
-  return docSnap.id;
+  if (docSnap.exists()) {
+    return { commentThread: docSnap.data(), id, err: null };
+  } else {
+    return {
+      commentThread: null,
+      id,
+      err: new Error("CommentThread not found"),
+    };
+  }
+};
+export const updateCommentThread = async (id, commentThread) => {
+  const docRef = doc(db, "commentThreads", id);
+  await updateDoc(docRef, commentThread);
+  return true;
+};
+
+export const addCommentToCommentThread = async (newComment, threadId) => {
+  const { commentThread } = await getCommentThread(threadId);
+
+  if (commentThread) {
+    const comments = commentThread.comments || [];
+    const updatedComments = [...comments, newComment];
+    await updateCommentThread(threadId, { comments: updatedComments });
+    return true;
+  } else {
+    return false;
+  }
 };

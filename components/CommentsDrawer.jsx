@@ -14,7 +14,10 @@ import {
 import { useFormik } from "formik";
 import React, { createContext, useContext, useState, useRef } from "react";
 import { postComment } from "../services/comment.service";
-import { createCommentThread } from "../services/commentThread.service";
+import {
+  addCommentToCommentThread,
+  createCommentThread,
+} from "../services/commentThread.service";
 import createTempCommentThread from "../utils/createTempCommentThread";
 import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
 import { useSelection } from "../stores/selection.store";
@@ -27,14 +30,23 @@ export const MODE = {
 
 export const CommentsDrawerProvider = ({ children, id, post }) => {
   const hiddenPosition = [-1000, 1000];
-  const [mode, setMode] = useState(MODE.ADD);
   const [commentButtonPosition, setCommentButtonPosition] =
     useState(hiddenPosition);
-
+  const [commentThreadId, setCommentThreadId] = useState("temp");
+  let mode;
+  if (commentThreadId === "temp") {
+    mode = MODE.ADD;
+  } else {
+    mode = MODE.VIEW;
+  }
   let timeoutHandle = useRef(null);
-  const showCommentButton = (mode, [top, right], autoHide = false) => {
+  const showCommentButton = (
+    commentThreadId,
+    [top, right],
+    autoHide = false
+  ) => {
+    setCommentThreadId(commentThreadId);
     clearTimeout(timeoutHandle.current);
-    setMode(mode);
     setCommentButtonPosition([top, right]);
     if (autoHide) {
       timeoutHandle.current = setTimeout(() => {
@@ -53,7 +65,7 @@ export const CommentsDrawerProvider = ({ children, id, post }) => {
         showCommentButton,
         hideCommentButton,
         mode,
-        setMode,
+        commentThreadId,
       }}
     >
       {children}
@@ -68,7 +80,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
       "CommentsDrawer must be used within a CommentsDrawerProvider"
     );
   }
-  const { commentButtonPosition, mode } = commentDrawerContext;
+  const { commentButtonPosition, mode, commentThreadId } = commentDrawerContext;
   const { selection, updateSelection } = useSelection();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -85,14 +97,20 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
         const newComment = await postComment(values.text);
         if (mode === MODE.ADD) {
           //create comment thread
-          const commentThreadId = await createCommentThread({
+          const newCommentThreadId = await createCommentThread({
             comments: [newComment],
           });
 
-          await addCommentThreadToCurrentDoc(commentThreadId);
+          const success = await addCommentThreadToCurrentDoc(
+            newCommentThreadId
+          );
         } else {
           // view mode
           // add comment to thread
+          const success = await addCommentToCommentThread(
+            newComment,
+            commentThreadId
+          );
         }
 
         resetForm();
