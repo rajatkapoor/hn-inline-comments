@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, { createContext, useContext } from "react";
 import { postComment } from "../services/comment.service";
 import { useCommentThread } from "../stores/commentThread.store";
 import { useSelection } from "../stores/selection.store";
@@ -22,30 +22,13 @@ import CommentThread from "./CommentThread";
 export const CommentsDrawerContext = createContext();
 
 export const CommentsDrawerProvider = ({ children }) => {
-  const hiddenPosition = [-1000, 1000];
-  const [commentButtonPosition, setCommentButtonPosition] =
-    useState(hiddenPosition);
-
-  let timeoutHandle = useRef(null);
-  const showCommentButton = ([top, right], autoHide = false) => {
-    clearTimeout(timeoutHandle.current);
-    setCommentButtonPosition([top, right]);
-    if (autoHide) {
-      timeoutHandle.current = setTimeout(() => {
-        hideCommentButton();
-      }, 2000);
-    }
-  };
-  const hideCommentButton = () => {
-    setCommentButtonPosition(hiddenPosition);
-  };
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <CommentsDrawerContext.Provider
       value={{
-        commentButtonPosition,
-        showCommentButton,
-        hideCommentButton,
+        isOpen,
+        onOpen,
+        onClose,
       }}
     >
       {children}
@@ -55,7 +38,6 @@ export const CommentsDrawerProvider = ({ children }) => {
 
 const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
   const {
-    id,
     comments,
     resetCommentThread,
     isNewThread,
@@ -63,23 +45,10 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
     createNewCommentThreadWithComment,
     addCommentToCommentThread,
   } = useCommentThread();
-  const { selection, updateSelection } = useSelection();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  //#region
+  const { selection, updateSelection, getSelectionPosition } = useSelection();
   const commentDrawerContext = useContext(CommentsDrawerContext);
-  if (!commentDrawerContext) {
-    throw new Error(
-      "CommentsDrawer must be used within a CommentsDrawerProvider"
-    );
-  }
-  const { commentButtonPosition } = commentDrawerContext;
-  let buttonText;
-  if (isExistingThread()) {
-    buttonText = "View Comments";
-  } else {
-    buttonText = "Add Comments";
-  }
-  //#endregion
+  const { isOpen, onClose, onOpen } = commentDrawerContext;
+  const position = getSelectionPosition();
 
   const handleClose = () => {
     resetCommentThread();
@@ -104,8 +73,8 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
   return (
     <Box
       position={"absolute"}
-      top={commentButtonPosition[0]}
-      left={commentButtonPosition[1]}
+      top={position[0]}
+      left={position[1]}
       zIndex={100}
     >
       <Button
@@ -119,7 +88,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
         }}
         pos="relative"
       >
-        {buttonText}
+        Add comments
       </Button>
       <Drawer isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />

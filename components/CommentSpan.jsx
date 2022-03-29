@@ -7,19 +7,18 @@ const CommentSpan = ({ addCommentToCurrentDoc, ...props }) => {
   const commentRef = useRef();
   const commentDrawerContext = useContext(CommentsDrawerContext);
   const { initializeCommentThread } = useCommentThread();
-  const { showCommentButton } = commentDrawerContext;
+  const { onOpen } = commentDrawerContext;
 
-  const handleHover = async () => {
+  const onClick = async () => {
     initializeCommentThread(commentThreadId);
-    const { top, left } = commentRef.current.getBoundingClientRect();
-    showCommentButton([top - 50, left], true);
+    onOpen();
   };
 
   return (
     <span
       style={{ backgroundColor: "yellow" }}
       {...props}
-      onMouseEnter={handleHover}
+      onClick={onClick}
       ref={commentRef}
     />
   );

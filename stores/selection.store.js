@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react";
+import { useEffect, createContext, useContext, useReducer } from "react";
 
 const SelectionContext = createContext();
 
@@ -38,10 +38,49 @@ export const useSelection = () => {
   const updateSelection = async (selection) => {
     dispatch({ type: "UPDATE_SELECTION", payload: { selection } });
   };
+  const clearSelection = () => {
+    dispatch({ type: "UPDATE_SELECTION", payload: { selection: null } });
+  };
+  const selectionChangeHandler = (e) => {
+    const selection = document.getSelection();
+    console.log(
+      "🚀 ~ file: selection.store.js ~ CHANGING selection",
+      selection
+    );
+    // if (!selection.isCollapsed) {
+    updateSelection(selection);
+    // }
+  };
+  useEffect(() => {
+    console.log("setting up subs");
+    // window.addEventListener("onselectionchange", selectionChangeHandler);
+    document.addEventListener("selectionchange", selectionChangeHandler);
+    return () => {
+      console.log("cleaning up subs");
+
+      document.removeEventListener("onselectionchange", selectionChangeHandler);
+    };
+  }, []);
+
+  const getSelectionPosition = () => {
+    try {
+      if (selection && !selection.isCollapsed) {
+        const range = selection.getRangeAt(0).cloneRange();
+        const rect = range.getBoundingClientRect();
+        return [rect.top - 50, rect.left];
+      } else {
+        return [-1000, -1000];
+      }
+    } catch (error) {
+      return [-1000, -1000];
+    }
+  };
 
   return {
     selection,
     updateSelection,
+    clearSelection,
     dispatch,
+    getSelectionPosition,
   };
 };

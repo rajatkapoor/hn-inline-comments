@@ -54,7 +54,6 @@ const Preview = () => {
 
             <CommentsDrawer
               addCommentThreadToCurrentDoc={addCommentThreadToCurrentDoc}
-              buttonText="View Comments"
             />
           </Box>
         </CommentsDrawerProvider>

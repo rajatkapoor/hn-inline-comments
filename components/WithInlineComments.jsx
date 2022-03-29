@@ -10,11 +10,12 @@ import { CommentsDrawerContext, MODE } from "./CommentsDrawer";
 const WithInlineComments = (node, props) => {
   const commentDrawerContext = useContext(CommentsDrawerContext);
   const { showCommentButton } = commentDrawerContext;
-  const { updateSelection } = useSelection();
+  const { updateSelection, clearSelection } = useSelection();
   const { initializeCommentThread } = useCommentThread();
 
   const onMouseDown = (e) => {
     //@todo: Add some details somewhere to capture the current node
+    clearSelection();
   };
 
   const onMouseUp = async (e) => {
@@ -22,10 +23,6 @@ const WithInlineComments = (node, props) => {
 
     const sel = window.getSelection();
     if (canCreateCommentThreadOnSelection(sel)) {
-      updateSelection(sel);
-      const range = sel.getRangeAt(0).cloneRange();
-      const rect = range.getBoundingClientRect();
-      showCommentButton([rect.top - 50, rect.left], 5000);
       await initializeCommentThread("temp");
     }
   };
