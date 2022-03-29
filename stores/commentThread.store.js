@@ -2,6 +2,11 @@ import { createContext, useContext, useReducer, useEffect } from "react";
 import * as commentThreadService from "../services/commentThread.service";
 
 const initialValues = {
+  id: null,
+  comments: [],
+};
+
+const newThreadValues = {
   id: "temp",
   comments: [],
 };
@@ -10,6 +15,8 @@ const CommentThreadContext = createContext();
 
 const commentThreadReducer = (state, action) => {
   switch (action.type) {
+    case "NEW_COMMENT_THREAD":
+      return { ...newThreadValues };
     case "UPDATE_COMMENT_THREAD":
       return {
         ...state,
@@ -44,12 +51,17 @@ export const useCommentThread = () => {
   const { state, dispatch } = context;
   const { comments, id } = state;
 
-  const isNewThread = id === "temp";
-  const isExistingThread = !isNewThread;
+  const isNewThread = () => !!id && id === "temp";
+  const isExistingThread = () => !!id && !isNewThread();
 
   const resetCommentThread = () => {
     dispatch({
       type: "RESET_COMMENT_THREAD",
+    });
+  };
+  const newCommentThread = () => {
+    dispatch({
+      type: "NEW_COMMENT_THREAD",
     });
   };
 
@@ -62,13 +74,21 @@ export const useCommentThread = () => {
   };
 
   const initializeCommentThread = async (id) => {
-    if (isNewThread()) {
-      return resetCommentThread();
+    if (id === "temp") {
+      return newCommentThread();
+    } else {
+      dispatch({
+        type: "UPDATE_COMMENT_THREAD",
+        payload: { id, comments: [] },
+      });
+      const comments = await commentThreadService.getAllCommentsInCommentThread(
+        id
+      );
+      dispatch({
+        type: "UPDATE_COMMENT_THREAD",
+        payload: { id, comments },
+      });
     }
-    const comments = await commentThreadService.getAllCommentsInCommentThread(
-      id
-    );
-    dispatch({ type: "UPDATE_COMMENT_THREAD", payload: { id, comments } });
   };
 
   return {

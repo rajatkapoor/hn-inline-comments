@@ -58,14 +58,6 @@ export const CommentsDrawerProvider = ({ children }) => {
 };
 
 const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
-  const commentDrawerContext = useContext(CommentsDrawerContext);
-  if (!commentDrawerContext) {
-    throw new Error(
-      "CommentsDrawer must be used within a CommentsDrawerProvider"
-    );
-  }
-  const { commentButtonPosition } = commentDrawerContext;
-
   const {
     id,
     comments,
@@ -76,24 +68,32 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
   } = useCommentThread();
   const { selection, updateSelection } = useSelection();
 
+  const commentDrawerContext = useContext(CommentsDrawerContext);
+  if (!commentDrawerContext) {
+    throw new Error(
+      "CommentsDrawer must be used within a CommentsDrawerProvider"
+    );
+  }
+  const { commentButtonPosition } = commentDrawerContext;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const handleClose = () => {
-    console.log("closeand reset");
     resetCommentThread();
     onClose();
   };
+
   let buttonText;
-  if (isNewThread) {
-    buttonText = "Add Comments";
-  } else {
+  if (isExistingThread()) {
     buttonText = "View Comments";
+  } else {
+    buttonText = "Add Comments";
   }
   const { values, handleChange, handleSubmit, setFieldValue, resetForm } =
     useFormik({
       initialValues: { text: "" },
       onSubmit: async (values) => {
         const newComment = await postComment(values.text);
-        if (isNewThread) {
+        if (isNewThread()) {
           //create comment thread
           const newCommentThreadId = await createCommentThread({
             comments: [newComment],
@@ -124,7 +124,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
     >
       <Button
         onClick={() => {
-          if (isNewThread && canCreateCommentThreadOnSelection(selection)) {
+          if (isNewThread() && canCreateCommentThreadOnSelection(selection)) {
             createTempCommentThread(selection);
             updateSelection(null);
           } else {

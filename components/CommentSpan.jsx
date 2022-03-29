@@ -9,10 +9,10 @@ const CommentSpan = ({ addCommentToCurrentDoc, ...props }) => {
   const { initializeCommentThread } = useCommentThread();
   const { showCommentButton } = commentDrawerContext;
 
-  const handleHover = () => {
+  const handleHover = async () => {
+    initializeCommentThread(commentThreadId);
     const { top, left } = commentRef.current.getBoundingClientRect();
     showCommentButton([top - 50, left], true);
-    initializeCommentThread(commentThreadId);
   };
 
   return (
