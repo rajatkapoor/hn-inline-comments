@@ -39,8 +39,9 @@ export const CommentsDrawerProvider = ({ children }) => {
   );
 };
 
-const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
+const CommentsDrawer = ({ addCommentThreadToCurrentDoc, acceptSuggestion }) => {
   const {
+    id,
     comments,
     resetCommentThread,
     isNewThread,
@@ -58,8 +59,8 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
     onClose();
   };
 
-  const onCommentSubmit = async ({ text: commentText }) => {
-    const { comment } = await createComment(commentText);
+  const onCommentSubmit = async (newComment) => {
+    const { comment } = await createComment(newComment);
     if (isExistingThread()) {
       await addCommentToCommentThread(comment);
     } else {
@@ -75,6 +76,10 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
       updateSelection(null);
     }
     onOpen();
+  };
+
+  const handleAcceptSuggestion = (comment) => {
+    acceptSuggestion(id, comment);
   };
 
   return (
@@ -94,7 +99,10 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
           <DrawerHeader>Add a comment</DrawerHeader>
 
           <DrawerBody>
-            <CommentThread comments={comments} />
+            <CommentThread
+              comments={comments}
+              acceptSuggestion={handleAcceptSuggestion}
+            />
             <CommentInputForm onCommentSubmit={onCommentSubmit} />
           </DrawerBody>
         </DrawerContent>

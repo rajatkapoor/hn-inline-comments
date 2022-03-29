@@ -100,10 +100,14 @@ export const useCommentThread = () => {
     });
   };
 
-  const createNewCommentThreadWithComment = async ({ id, text }) => {
+  const createNewCommentThreadWithComment = async ({
+    id,
+    text,
+    isSuggestion,
+  }) => {
     dispatch({
       type: "UPDATE_COMMENT_THREAD",
-      payload: { comments: [{ id, text }], id: "new" },
+      payload: { comments: [{ id, text, isSuggestion }], id: "new" },
     });
     const commentThreadId = await commentThreadService.createCommentThread({
       comments: [doc(commentsCollection, id)],

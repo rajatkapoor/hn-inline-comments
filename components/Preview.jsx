@@ -19,7 +19,20 @@ const Preview = () => {
   } = usePost();
 
   const addCommentThreadToCurrentDoc = async (commentThreadId) => {
+    console.log(
+      "🚀 ~ file: Preview.jsx ~ line 22 ~ addCommentThreadToCurrentDoc ~ commentThreadId",
+      commentThreadId
+    );
     const content = await getMarkdownFromHTML(commentThreadId);
+    await updateContent(id, content);
+  };
+  const acceptSuggestion = async (commentThreadId, comment) => {
+    console.log(
+      "🚀 ~ file: Preview.jsx ~ line 26 ~ acceptSuggestion ~ commentThreadId, comment",
+      commentThreadId,
+      comment
+    );
+    const content = await getMarkdownFromHTML(commentThreadId, comment.text);
     await updateContent(id, content);
   };
 
@@ -53,6 +66,7 @@ const Preview = () => {
             </Box>
 
             <CommentsDrawer
+              acceptSuggestion={acceptSuggestion}
               addCommentThreadToCurrentDoc={addCommentThreadToCurrentDoc}
             />
           </Box>

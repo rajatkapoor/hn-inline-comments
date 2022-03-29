@@ -1,23 +1,14 @@
-import {
-  getDoc,
-  doc,
-  updateDoc,
-  getDocs,
-  setDoc,
-  addDoc,
-} from "firebase/firestore";
-import { db, commentsCollection } from "../utils/firebase";
+import { addDoc } from "firebase/firestore";
+import { commentsCollection } from "../utils/firebase";
 
-export const createComment = async (text) => {
-  const docSnap = await addDoc(commentsCollection, {
-    text,
-  });
+export const createComment = async (comment) => {
+  const docSnap = await addDoc(commentsCollection, comment);
 
   return {
     id: docSnap.id,
     comment: {
       id: docSnap.id,
-      text,
+      ...comment,
     },
   };
 };
