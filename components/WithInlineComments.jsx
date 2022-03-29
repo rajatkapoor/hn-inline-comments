@@ -2,6 +2,8 @@
 import { Box, Portal } from "@chakra-ui/react";
 import React, { useState } from "react";
 import CommentsDrawer from "./CommentsDrawer";
+import canCreateCommentOnSelection from "../utils/canCreateCommentOnSelection";
+import createTempComment from "../utils/createTempComment";
 
 // eslint-disable-next-line react/display-name
 const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
@@ -20,16 +22,9 @@ const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
     commentSpan.dataset.commentId = "temp";
     commentSpan.style.backgroundColor = "blue";
 
-    const sel = window.getSelection();
-    const { anchorOffset, focusOffset } = sel;
-    if (sel.rangeCount && anchorOffset !== focusOffset) {
-      const range = sel.getRangeAt(0).cloneRange();
-      const rect = range.getBoundingClientRect();
+    if (canCreateCommentOnSelection()) {
+      const rect = createTempComment(commentSpan);
       setAddCommentBoxPosition([rect.top - 50, rect.left]);
-
-      range.surroundContents(commentSpan);
-      sel.removeAllRanges();
-      sel.addRange(range);
     }
   };
 
