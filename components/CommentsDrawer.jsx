@@ -66,6 +66,13 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
       addCommentThreadToCurrentDoc(newCommentThreadId);
     }
   };
+  const handleAddCommentButtonClick = () => {
+    if (isNewThread() && canCreateCommentThreadOnSelection(selection)) {
+      createTempCommentThread(selection);
+      updateSelection(null);
+    }
+    onOpen();
+  };
 
   return (
     <Box
@@ -74,17 +81,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
       left={position[1]}
       zIndex={100}
     >
-      <Button
-        onClick={() => {
-          if (isNewThread() && canCreateCommentThreadOnSelection(selection)) {
-            createTempCommentThread(selection);
-            updateSelection(null);
-          } else {
-          }
-          onOpen();
-        }}
-        pos="relative"
-      >
+      <Button onClick={handleAddCommentButtonClick} pos="relative">
         Add comments
       </Button>
       <Drawer isOpen={isOpen} onClose={onClose}>
