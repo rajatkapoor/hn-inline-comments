@@ -1,17 +1,9 @@
+import { addDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import {
-  getDoc,
-  doc,
-  updateDoc,
-  getDocs,
-  setDoc,
-  addDoc,
-} from "firebase/firestore";
-import {
-  db,
-  commentThreadsCollection,
   commentsCollection,
+  commentThreadsCollection,
+  db,
 } from "../utils/firebase";
-import { postComment } from "./comment.service";
 
 export const createCommentThread = async (data) => {
   const docSnap = await addDoc(commentThreadsCollection, data);

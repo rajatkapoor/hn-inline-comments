@@ -43,10 +43,10 @@ export const useSelection = () => {
   };
   const selectionChangeHandler = (e) => {
     const selection = document.getSelection();
-    console.log(
-      "🚀 ~ file: selection.store.js ~ CHANGING selection",
-      selection
-    );
+    // console.log(
+    //   "🚀 ~ file: selection.store.js ~ CHANGING selection",
+    //   selection
+    // );
     // if (!selection.isCollapsed) {
     updateSelection(selection);
     // }

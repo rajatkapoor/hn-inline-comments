@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import { db, commentsCollection } from "../utils/firebase";
 
-export const postComment = async (text) => {
+export const createComment = async (text) => {
   const docSnap = await addDoc(commentsCollection, {
     text,
   });

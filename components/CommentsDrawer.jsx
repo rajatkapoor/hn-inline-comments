@@ -12,12 +12,12 @@ import {
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import React, { createContext, useContext } from "react";
-import { postComment } from "../services/comment.service";
+import { createComment } from "../services/comment.service";
 import { useCommentThread } from "../stores/commentThread.store";
 import { useSelection } from "../stores/selection.store";
 import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
 import createTempCommentThread from "../utils/createTempCommentThread";
-import CommentInput from "./CommentInput";
+import CommentInputForm from "./CommentInputForm";
 import CommentThread from "./CommentThread";
 export const CommentsDrawerContext = createContext();
 
@@ -55,20 +55,17 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
     onClose();
   };
 
-  const { values, handleChange, handleSubmit, setFieldValue } = useFormik({
-    initialValues: { text: "" },
-    onSubmit: async ({ text: commentText }, { resetForm }) => {
-      const { id, comment } = await postComment(commentText);
-      if (isExistingThread()) {
-        await addCommentToCommentThread(comment);
-      } else {
-        const newCommentThreadId = await createNewCommentThreadWithComment(
-          comment
-        );
-        addCommentThreadToCurrentDoc(newCommentThreadId);
-      }
-    },
-  });
+  const onCommentSubmit = async ({ text: commentText }) => {
+    const { comment } = await createComment(commentText);
+    if (isExistingThread()) {
+      await addCommentToCommentThread(comment);
+    } else {
+      const newCommentThreadId = await createNewCommentThreadWithComment(
+        comment
+      );
+      addCommentThreadToCurrentDoc(newCommentThreadId);
+    }
+  };
 
   return (
     <Box
@@ -98,18 +95,8 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
 
           <DrawerBody>
             <CommentThread comments={comments} />
-            <CommentInput
-              handleChange={handleChange}
-              handleSubmit={handleSubmit}
-              defaultValue={values.text}
-            />
+            <CommentInputForm onCommentSubmit={onCommentSubmit} />
           </DrawerBody>
-
-          <DrawerFooter>
-            <Button type="submit" form="my-form">
-              Save
-            </Button>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </Box>
