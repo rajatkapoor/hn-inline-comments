@@ -8,6 +8,7 @@ import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
 
 const getMarkdownFromHTML = async (commentThreadId) => {
   const newHtml = document.querySelector(".post-preview").innerHTML;
+  let finalCommentThreadId;
   const file = await unified()
     .use(rehypeParse)
 
@@ -16,6 +17,11 @@ const getMarkdownFromHTML = async (commentThreadId) => {
         ["span"]: (h, node, parent) => {
           if (!!node.properties.dataCommentThreadId) {
             const { dataCommentThreadId } = node.properties;
+            if (dataCommentThreadId === "temp") {
+              finalCommentThreadId = commentThreadId;
+            } else {
+              finalCommentThreadId = dataCommentThreadId;
+            }
 
             const commentNode = h(
               node,
@@ -23,7 +29,7 @@ const getMarkdownFromHTML = async (commentThreadId) => {
               {
                 name: "hn-comment-thread",
                 attributes: {
-                  "data-comment-thread-id": commentThreadId,
+                  "data-comment-thread-id": finalCommentThreadId,
                 },
               },
 
