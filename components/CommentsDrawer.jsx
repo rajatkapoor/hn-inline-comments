@@ -5,17 +5,16 @@ import {
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useFormik } from "formik";
 import React, { createContext, useContext } from "react";
 import { createComment } from "../services/comment.service";
 import { useCommentThread } from "../stores/commentThread.store";
 import { useSelection } from "../stores/selection.store";
 import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
+import clearTempCommentThreads from "../utils/clearTempCommentThreads";
 import createTempCommentThread from "../utils/createTempCommentThread";
 import CommentInputForm from "./CommentInputForm";
 import CommentThread from "./CommentThread";
@@ -23,12 +22,16 @@ export const CommentsDrawerContext = createContext();
 
 export const CommentsDrawerProvider = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleClose = () => {
+    clearTempCommentThreads();
+    onClose();
+  };
   return (
     <CommentsDrawerContext.Provider
       value={{
         isOpen,
         onOpen,
-        onClose,
+        onClose: handleClose,
       }}
     >
       {children}
