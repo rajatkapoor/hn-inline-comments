@@ -12,16 +12,27 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import React, { createContext, useContext, useState, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import { postComment } from "../services/comment.service";
 import {
   addCommentToCommentThread,
   createCommentThread,
+  getAllCommentsInCommentThred,
+  getCommentThread,
 } from "../services/commentThread.service";
 import createTempCommentThread from "../utils/createTempCommentThread";
 import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
 import { useSelection } from "../stores/selection.store";
 import CommentInput from "./CommentInput";
+import CommentThread from "./CommentThread";
+import { db } from "../utils/firebase";
+import { getDoc, doc } from "firebase/firestore";
 export const CommentsDrawerContext = createContext();
 export const MODE = {
   ADD: "ADD",
@@ -32,13 +43,24 @@ export const CommentsDrawerProvider = ({ children, id, post }) => {
   const hiddenPosition = [-1000, 1000];
   const [commentButtonPosition, setCommentButtonPosition] =
     useState(hiddenPosition);
+
+  const [comments, setComments] = useState([]);
   const [commentThreadId, setCommentThreadId] = useState("temp");
+
   let mode;
   if (commentThreadId === "temp") {
     mode = MODE.ADD;
   } else {
     mode = MODE.VIEW;
   }
+
+  useEffect(() => {
+    if (mode === MODE.VIEW) {
+      getAllCommentsInCommentThred(commentThreadId).then((comments) => {
+        setComments(comments);
+      });
+    }
+  }, [commentThreadId]);
   let timeoutHandle = useRef(null);
   const showCommentButton = (
     commentThreadId,
@@ -66,6 +88,7 @@ export const CommentsDrawerProvider = ({ children, id, post }) => {
         hideCommentButton,
         mode,
         commentThreadId,
+        comments,
       }}
     >
       {children}
@@ -80,7 +103,8 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
       "CommentsDrawer must be used within a CommentsDrawerProvider"
     );
   }
-  const { commentButtonPosition, mode, commentThreadId } = commentDrawerContext;
+  const { commentButtonPosition, mode, commentThreadId, comments } =
+    commentDrawerContext;
   const { selection, updateSelection } = useSelection();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -149,6 +173,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
           <DrawerHeader>Add a comment</DrawerHeader>
 
           <DrawerBody>
+            <CommentThread comments={comments} />
             <CommentInput
               handleChange={handleChange}
               handleSubmit={handleSubmit}

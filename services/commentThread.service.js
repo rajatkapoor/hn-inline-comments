@@ -28,6 +28,18 @@ export const getCommentThread = async (id) => {
     };
   }
 };
+export const getAllCommentsInCommentThred = async (id) => {
+  const { commentThread } = await getCommentThread(id);
+  const comments = await Promise.all(
+    commentThread.comments.map(async (comment) => {
+      const id = comment.id;
+      const commentDoc = await getDoc(doc(db, "comments", comment.id));
+      return { id, ...commentDoc.data() };
+    })
+  );
+  return comments;
+};
+
 export const updateCommentThread = async (id, commentThread) => {
   const docRef = doc(db, "commentThreads", id);
   await updateDoc(docRef, commentThread);
