@@ -1,25 +1,25 @@
 // import { h } from "hastscript";
 import { Box, Portal } from "@chakra-ui/react";
-import React, { useState, useRef } from "react";
-import CommentsDrawer from "./CommentsDrawer";
+import React, { useContext, useRef, useState } from "react";
+import CommentsDrawer, { CommentsDrawerContext } from "./CommentsDrawer";
 
 // eslint-disable-next-line react/display-name
 const CommentSpan = ({ addCommentToCurrentDoc, ...props }) => {
   const commentRef = useRef();
-  const [addCommentBoxPosition, setAddCommentBoxPosition] = useState([
-    -1000, -1000,
-  ]);
+  const commentDrawerContext = useContext(CommentsDrawerContext);
+  const { commentButtonPosition, setCommentButtonPosition } =
+    commentDrawerContext;
 
   let timeoutHandle;
   const handleHover = () => {
     clearTimeout(timeoutHandle);
     const { top, left } = commentRef.current.getBoundingClientRect();
-    setAddCommentBoxPosition([top - 50, left]);
+    setCommentButtonPosition([top - 50, left]);
   };
   const handleMouseLeave = () => {
     timeoutHandle = setTimeout(() => {
-      setAddCommentBoxPosition([-1000, -1000]);
-    }, 500);
+      setCommentButtonPosition([-1000, -1000]);
+    }, 2000);
   };
 
   return (
@@ -32,21 +32,12 @@ const CommentSpan = ({ addCommentToCurrentDoc, ...props }) => {
         ref={commentRef}
       />
 
-      <Portal>
-        <Box
-          position={"absolute"}
-          top={addCommentBoxPosition[0]}
-          left={addCommentBoxPosition[1]}
-          zIndex={100}
-          onMouseOver={handleHover}
-          onMouseLeave={handleMouseLeave}
-        >
-          <CommentsDrawer
-            addCommentToCurrentDoc={addCommentToCurrentDoc}
-            buttonText="View Comments"
-          />
-        </Box>
-      </Portal>
+      {/* <Portal>
+        <CommentsDrawer
+          addCommentToCurrentDoc={addCommentToCurrentDoc}
+          buttonText="View Comments"
+        />
+      </Portal> */}
     </>
   );
 };

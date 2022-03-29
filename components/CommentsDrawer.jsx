@@ -9,15 +9,43 @@ import {
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
+  Box,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import React from "react";
+import React, { createContext, useContext, useState } from "react";
 import { postComment } from "../services/comment.service";
+
+export const CommentsDrawerContext = createContext();
+
+export const CommentsDrawerProvider = ({ children, id, post }) => {
+  const [commentButtonPosition, setCommentButtonPosition] = useState([
+    -1000, 1000,
+  ]);
+
+  return (
+    <CommentsDrawerContext.Provider
+      value={{
+        commentButtonPosition,
+        setCommentButtonPosition,
+      }}
+    >
+      {children}
+    </CommentsDrawerContext.Provider>
+  );
+};
 
 const CommentsDrawer = ({
   buttonText = "Add Comments",
   addCommentToCurrentDoc,
 }) => {
+  const context = useContext(CommentsDrawerContext);
+  if (!context) {
+    throw new Error(
+      "CommentsDrawer must be used within a CommentsDrawerProvider"
+    );
+  }
+  const { commentButtonPosition, setCommentButtonPosition } = context;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { values, handleChange, handleSubmit, setFieldValue, resetForm } =
     useFormik({
@@ -32,7 +60,12 @@ const CommentsDrawer = ({
     });
 
   return (
-    <>
+    <Box
+      position={"absolute"}
+      top={commentButtonPosition[0]}
+      left={commentButtonPosition[1]}
+      zIndex={100}
+    >
       <Button onClick={onOpen} pos="relative">
         {buttonText}
       </Button>
@@ -60,7 +93,7 @@ const CommentsDrawer = ({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </>
+    </Box>
   );
 };
 export default CommentsDrawer;
