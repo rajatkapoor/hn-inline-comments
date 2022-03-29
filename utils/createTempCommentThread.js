@@ -1,15 +1,14 @@
-const createTempCommentThread = () => {
+const createTempCommentThread = (selection) => {
   const commentSpan = document.createElement("span");
 
-  commentSpan.dataset.commentId = "temp";
+  commentSpan.dataset.commentThreadId = "temp";
   commentSpan.style.backgroundColor = "pink";
 
-  const sel = window.getSelection();
-  const range = sel.getRangeAt(0).cloneRange();
+  const range = selection.getRangeAt(0).cloneRange();
   const rect = range.getBoundingClientRect();
   range.surroundContents(commentSpan);
-  sel.removeAllRanges();
-  sel.addRange(range);
+  selection.removeAllRanges();
+  selection.addRange(range);
   return rect;
 };
 

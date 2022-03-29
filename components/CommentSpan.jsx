@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { CommentsDrawerContext } from "./CommentsDrawer";
+import { CommentsDrawerContext, MODE } from "./CommentsDrawer";
 
 const CommentSpan = ({ addCommentToCurrentDoc, ...props }) => {
   const commentRef = useRef();
@@ -8,7 +8,7 @@ const CommentSpan = ({ addCommentToCurrentDoc, ...props }) => {
 
   const handleHover = () => {
     const { top, left } = commentRef.current.getBoundingClientRect();
-    showCommentButton("View Comments", [top - 50, left], true);
+    showCommentButton(MODE.VIEW, [top - 50, left], true);
   };
 
   return (

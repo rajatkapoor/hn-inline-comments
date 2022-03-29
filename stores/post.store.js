@@ -34,11 +34,6 @@ export const usePost = () => {
   const { state, dispatch } = context;
   const { post, id } = state;
   const updatePost = async (id, post) => {
-    console.log(
-      "🚀 ~ file: post.store.js ~ line 37 ~ updatePost ~ id, post",
-      id,
-      post
-    );
     dispatch({ type: "UPDATE_POST", payload: { post, id } });
     await updatePostOnServer(id, post);
   };

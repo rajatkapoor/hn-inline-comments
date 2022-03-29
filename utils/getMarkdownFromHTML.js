@@ -6,7 +6,7 @@ import remarkStringify from "remark-stringify";
 import { unified } from "unified";
 import hashnodeCommentPlugin from "../plugins/HashnodeComment.plugin";
 
-const getMarkdownFromHTML = async (commentId) => {
+const getMarkdownFromHTML = async (commentThreadId) => {
   const newHtml = document.querySelector(".post-preview").innerHTML;
   const file = await unified()
     .use(rehypeParse)
@@ -23,7 +23,7 @@ const getMarkdownFromHTML = async (commentId) => {
               {
                 name: "hn-comment-thread",
                 attributes: {
-                  "data-comment-thread-id": commentId,
+                  "data-comment-thread-id": commentThreadId,
                 },
               },
 

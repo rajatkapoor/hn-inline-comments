@@ -19,3 +19,4 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const postsCollection = collection(db, "posts");
 export const commentsCollection = collection(db, "comments");
+export const commentThreadsCollection = collection(db, "commentThreads");

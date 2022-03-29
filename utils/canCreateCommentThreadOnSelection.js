@@ -1,7 +1,6 @@
-const canCreateCommentThreadOnSelection = () => {
-  const sel = window.getSelection();
-  const { anchorOffset, focusOffset } = sel;
-  if (sel.rangeCount && anchorOffset !== focusOffset) {
+const canCreateCommentThreadOnSelection = (selection) => {
+  const { anchorOffset, focusOffset } = selection;
+  if (selection.rangeCount && anchorOffset !== focusOffset) {
     return true;
   } else {
     return false;

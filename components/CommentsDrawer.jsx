@@ -14,21 +14,27 @@ import {
 import { useFormik } from "formik";
 import React, { createContext, useContext, useState, useRef } from "react";
 import { postComment } from "../services/comment.service";
+import { createCommentThread } from "../services/commentThread.service";
 import createTempCommentThread from "../utils/createTempCommentThread";
 import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
+import { useSelection } from "../stores/selection.store";
 
 export const CommentsDrawerContext = createContext();
+export const MODE = {
+  ADD: "ADD",
+  VIEW: "VIEW",
+};
 
 export const CommentsDrawerProvider = ({ children, id, post }) => {
   const hiddenPosition = [-1000, 1000];
-  const [buttonText, setButtonText] = useState("Add Comments");
+  const [mode, setMode] = useState(MODE.ADD);
   const [commentButtonPosition, setCommentButtonPosition] =
     useState(hiddenPosition);
 
   let timeoutHandle = useRef(null);
-  const showCommentButton = (text, [top, right], autoHide = false) => {
+  const showCommentButton = (mode, [top, right], autoHide = false) => {
     clearTimeout(timeoutHandle.current);
-    setButtonText(text);
+    setMode(mode);
     setCommentButtonPosition([top, right]);
     if (autoHide) {
       timeoutHandle.current = setTimeout(() => {
@@ -44,9 +50,10 @@ export const CommentsDrawerProvider = ({ children, id, post }) => {
     <CommentsDrawerContext.Provider
       value={{
         commentButtonPosition,
-        buttonText,
         showCommentButton,
         hideCommentButton,
+        mode,
+        setMode,
       }}
     >
       {children}
@@ -54,22 +61,40 @@ export const CommentsDrawerProvider = ({ children, id, post }) => {
   );
 };
 
-const CommentsDrawer = ({ addCommentToCurrentDoc }) => {
-  const context = useContext(CommentsDrawerContext);
-  if (!context) {
+const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
+  const commentDrawerContext = useContext(CommentsDrawerContext);
+  if (!commentDrawerContext) {
     throw new Error(
       "CommentsDrawer must be used within a CommentsDrawerProvider"
     );
   }
-  const { commentButtonPosition, buttonText } = context;
+  const { commentButtonPosition, mode } = commentDrawerContext;
+  const { selection, updateSelection } = useSelection();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  let buttonText;
+  if (mode === MODE.ADD) {
+    buttonText = "Add Comments";
+  } else {
+    buttonText = "View Comments";
+  }
   const { values, handleChange, handleSubmit, setFieldValue, resetForm } =
     useFormik({
       initialValues: { text: "" },
       onSubmit: async (values) => {
-        const commentId = await postComment(values.text);
-        await addCommentToCurrentDoc(commentId);
+        const newComment = await postComment(values.text);
+        if (mode === MODE.ADD) {
+          //create comment thread
+          const commentThreadId = await createCommentThread({
+            comments: [newComment],
+          });
+
+          await addCommentThreadToCurrentDoc(commentThreadId);
+        } else {
+          // view mode
+          // add comment to thread
+        }
+
         resetForm();
         // also notify user that the comment was added
         onClose();
@@ -85,8 +110,13 @@ const CommentsDrawer = ({ addCommentToCurrentDoc }) => {
     >
       <Button
         onClick={() => {
-          if (canCreateCommentThreadOnSelection()) {
-            createTempCommentThread();
+          if (
+            mode === MODE.ADD &&
+            canCreateCommentThreadOnSelection(selection)
+          ) {
+            createTempCommentThread(selection);
+            updateSelection(null);
+          } else {
           }
           onOpen();
         }}

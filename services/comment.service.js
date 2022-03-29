@@ -13,5 +13,5 @@ export const postComment = async (text) => {
     text,
   });
 
-  return docSnap.id;
+  return docSnap;
 };
