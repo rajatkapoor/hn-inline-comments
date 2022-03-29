@@ -50,14 +50,7 @@ const Preview = () => {
                   );
                 },
                 ["hn-comment"]: ({ node, ...props }) => {
-                  return (
-                    <CommentSpan {...props} />
-                    // <span
-                    //   style={{ backgroundColor: "yellow" }}
-                    //   {...props}
-                    //   onClick
-                    // />
-                  );
+                  return <CommentSpan {...props} />;
                 },
               },
             }}
