@@ -6,7 +6,12 @@ import {
   setDoc,
   addDoc,
 } from "firebase/firestore";
-import { db, commentThreadsCollection } from "../utils/firebase";
+import {
+  db,
+  commentThreadsCollection,
+  commentsCollection,
+} from "../utils/firebase";
+import { postComment } from "./comment.service";
 
 export const createCommentThread = async (data) => {
   const docSnap = await addDoc(commentThreadsCollection, data);
@@ -48,13 +53,8 @@ export const updateCommentThread = async (id, commentThread) => {
 
 export const addCommentToCommentThread = async (newComment, threadId) => {
   const { commentThread } = await getCommentThread(threadId);
-
-  if (commentThread) {
-    const comments = commentThread.comments || [];
-    const updatedComments = [...comments, newComment];
-    await updateCommentThread(threadId, { comments: updatedComments });
-    return true;
-  } else {
-    return false;
-  }
+  const newCommentRef = doc(commentsCollection, newComment.id);
+  await updateCommentThread(threadId, {
+    comments: [...commentThread.comments, newCommentRef],
+  });
 };

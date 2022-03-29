@@ -13,5 +13,11 @@ export const postComment = async (text) => {
     text,
   });
 
-  return docSnap;
+  return {
+    id: docSnap.id,
+    comment: {
+      id: docSnap.id,
+      text,
+    },
+  };
 };

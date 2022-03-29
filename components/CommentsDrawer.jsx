@@ -13,10 +13,6 @@ import {
 import { useFormik } from "formik";
 import React, { createContext, useContext, useRef, useState } from "react";
 import { postComment } from "../services/comment.service";
-import {
-  addCommentToCommentThread,
-  createCommentThread,
-} from "../services/commentThread.service";
 import { useCommentThread } from "../stores/commentThread.store";
 import { useSelection } from "../stores/selection.store";
 import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
@@ -61,13 +57,15 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
   const {
     id,
     comments,
-    initializeCommentThread,
     resetCommentThread,
     isNewThread,
     isExistingThread,
+    createNewCommentThreadWithComment,
+    addCommentToCommentThread,
   } = useCommentThread();
   const { selection, updateSelection } = useSelection();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  //#region
   const commentDrawerContext = useContext(CommentsDrawerContext);
   if (!commentDrawerContext) {
     throw new Error(
@@ -75,45 +73,33 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
     );
   }
   const { commentButtonPosition } = commentDrawerContext;
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const handleClose = () => {
-    resetCommentThread();
-    onClose();
-  };
-
   let buttonText;
   if (isExistingThread()) {
     buttonText = "View Comments";
   } else {
     buttonText = "Add Comments";
   }
-  const { values, handleChange, handleSubmit, setFieldValue, resetForm } =
-    useFormik({
-      initialValues: { text: "" },
-      onSubmit: async (values) => {
-        const newComment = await postComment(values.text);
-        if (isNewThread()) {
-          //create comment thread
-          const newCommentThreadId = await createCommentThread({
-            comments: [newComment],
-          });
+  //#endregion
 
-          const success = await addCommentThreadToCurrentDoc(
-            newCommentThreadId
-          );
-          initializeCommentThread(newCommentThreadId);
-        } else {
-          // view mode
-          // add comment to thread
-          const success = await addCommentToCommentThread(newComment, id);
-        }
+  const handleClose = () => {
+    resetCommentThread();
+    onClose();
+  };
 
-        resetForm();
-        // also notify user that the comment was added
-        handleClose();
-      },
-    });
+  const { values, handleChange, handleSubmit, setFieldValue } = useFormik({
+    initialValues: { text: "" },
+    onSubmit: async ({ text: commentText }, { resetForm }) => {
+      const { id, comment } = await postComment(commentText);
+      if (isExistingThread()) {
+        await addCommentToCommentThread(comment);
+      } else {
+        const newCommentThreadId = await createNewCommentThreadWithComment(
+          comment
+        );
+        addCommentThreadToCurrentDoc(newCommentThreadId);
+      }
+    },
+  });
 
   return (
     <Box

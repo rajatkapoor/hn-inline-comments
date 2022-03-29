@@ -1,12 +1,14 @@
+import { doc } from "firebase/firestore";
 import { createContext, useContext, useReducer, useEffect } from "react";
 import * as commentThreadService from "../services/commentThread.service";
+import { commentsCollection } from "../utils/firebase";
 
 const initialValues = {
   id: null,
   comments: [],
 };
 
-const newThreadValues = {
+const tempThreadValues = {
   id: "temp",
   comments: [],
 };
@@ -15,8 +17,8 @@ const CommentThreadContext = createContext();
 
 const commentThreadReducer = (state, action) => {
   switch (action.type) {
-    case "NEW_COMMENT_THREAD":
-      return { ...newThreadValues };
+    case "TEMP_COMMENT_THREAD":
+      return { ...tempThreadValues };
     case "UPDATE_COMMENT_THREAD":
       return {
         ...state,
@@ -59,23 +61,23 @@ export const useCommentThread = () => {
       type: "RESET_COMMENT_THREAD",
     });
   };
-  const newCommentThread = () => {
+  const tempCommentThread = () => {
     dispatch({
-      type: "NEW_COMMENT_THREAD",
+      type: "TEMP_COMMENT_THREAD",
     });
   };
 
   const addCommentToCommentThread = async (comment) => {
-    await commentThreadService.addCommentToCommentThread(id, comment);
     dispatch({
       type: "UPDATE_COMMENT_THREAD",
       payload: { comments: [...comments, comment] },
     });
+    await commentThreadService.addCommentToCommentThread(comment, id);
   };
 
   const initializeCommentThread = async (id) => {
     if (id === "temp") {
-      return newCommentThread();
+      return tempCommentThread();
     } else {
       dispatch({
         type: "UPDATE_COMMENT_THREAD",
@@ -91,6 +93,28 @@ export const useCommentThread = () => {
     }
   };
 
+  const updateCommentThread = async (id, comments) => {
+    dispatch({
+      type: "UPDATE_COMMENT_THREAD",
+      payload: { comments, id },
+    });
+  };
+
+  const createNewCommentThreadWithComment = async ({ id, text }) => {
+    dispatch({
+      type: "UPDATE_COMMENT_THREAD",
+      payload: { comments: [{ id, text }], id: "new" },
+    });
+    const commentThreadId = await commentThreadService.createCommentThread({
+      comments: [doc(commentsCollection, id)],
+    });
+    dispatch({
+      type: "UPDATE_COMMENT_THREAD",
+      payload: { id: commentThreadId },
+    });
+    return commentThreadId;
+  };
+
   return {
     id,
     comments,
@@ -99,5 +123,7 @@ export const useCommentThread = () => {
     resetCommentThread,
     isNewThread,
     isExistingThread,
+    updateCommentThread,
+    createNewCommentThreadWithComment,
   };
 };
