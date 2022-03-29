@@ -1,5 +1,6 @@
 // import { h } from "hastscript";
 import React, { useContext } from "react";
+import { useCommentThread } from "../stores/commentThread.store";
 import { useSelection } from "../stores/selection.store";
 import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
 import createTempCommentThread from "../utils/createTempCommentThread";
@@ -10,6 +11,7 @@ const WithInlineComments = (node, props) => {
   const commentDrawerContext = useContext(CommentsDrawerContext);
   const { showCommentButton } = commentDrawerContext;
   const { updateSelection } = useSelection();
+  const { initializeCommentThread } = useCommentThread();
 
   const onMouseDown = (e) => {
     //@todo: Add some details somewhere to capture the current node
@@ -24,6 +26,7 @@ const WithInlineComments = (node, props) => {
       const range = sel.getRangeAt(0).cloneRange();
       const rect = range.getBoundingClientRect();
       showCommentButton("temp", [rect.top - 50, rect.left], 5000);
+      initializeCommentThread("temp");
     }
   };
 

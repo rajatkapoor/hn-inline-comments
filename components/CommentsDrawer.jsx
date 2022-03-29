@@ -1,73 +1,37 @@
 import {
+  Box,
   Button,
-  Input,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
   useDisclosure,
-  Box,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-} from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
 import { postComment } from "../services/comment.service";
 import {
   addCommentToCommentThread,
   createCommentThread,
-  getAllCommentsInCommentThred,
-  getCommentThread,
 } from "../services/commentThread.service";
-import createTempCommentThread from "../utils/createTempCommentThread";
-import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
+import { useCommentThread } from "../stores/commentThread.store";
 import { useSelection } from "../stores/selection.store";
+import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
+import createTempCommentThread from "../utils/createTempCommentThread";
 import CommentInput from "./CommentInput";
 import CommentThread from "./CommentThread";
-import { db } from "../utils/firebase";
-import { getDoc, doc } from "firebase/firestore";
 export const CommentsDrawerContext = createContext();
-export const MODE = {
-  ADD: "ADD",
-  VIEW: "VIEW",
-};
 
-export const CommentsDrawerProvider = ({ children, id, post }) => {
+export const CommentsDrawerProvider = ({ children }) => {
   const hiddenPosition = [-1000, 1000];
   const [commentButtonPosition, setCommentButtonPosition] =
     useState(hiddenPosition);
 
-  const [comments, setComments] = useState([]);
-  const [commentThreadId, setCommentThreadId] = useState("temp");
-
-  let mode;
-  if (commentThreadId === "temp") {
-    mode = MODE.ADD;
-  } else {
-    mode = MODE.VIEW;
-  }
-
-  useEffect(() => {
-    if (mode === MODE.VIEW) {
-      getAllCommentsInCommentThred(commentThreadId).then((comments) => {
-        setComments(comments);
-      });
-    }
-  }, [commentThreadId]);
   let timeoutHandle = useRef(null);
-  const showCommentButton = (
-    commentThreadId,
-    [top, right],
-    autoHide = false
-  ) => {
-    setCommentThreadId(commentThreadId);
+  const showCommentButton = ([top, right], autoHide = false) => {
     clearTimeout(timeoutHandle.current);
     setCommentButtonPosition([top, right]);
     if (autoHide) {
@@ -86,9 +50,6 @@ export const CommentsDrawerProvider = ({ children, id, post }) => {
         commentButtonPosition,
         showCommentButton,
         hideCommentButton,
-        mode,
-        commentThreadId,
-        comments,
       }}
     >
       {children}
@@ -103,13 +64,26 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
       "CommentsDrawer must be used within a CommentsDrawerProvider"
     );
   }
-  const { commentButtonPosition, mode, commentThreadId, comments } =
-    commentDrawerContext;
+  const { commentButtonPosition } = commentDrawerContext;
+
+  const {
+    id,
+    comments,
+    initializeCommentThread,
+    resetCommentThread,
+    isNewThread,
+    isExistingThread,
+  } = useCommentThread();
   const { selection, updateSelection } = useSelection();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const handleClose = () => {
+    console.log("closeand reset");
+    resetCommentThread();
+    onClose();
+  };
   let buttonText;
-  if (mode === MODE.ADD) {
+  if (isNewThread) {
     buttonText = "Add Comments";
   } else {
     buttonText = "View Comments";
@@ -119,7 +93,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
       initialValues: { text: "" },
       onSubmit: async (values) => {
         const newComment = await postComment(values.text);
-        if (mode === MODE.ADD) {
+        if (isNewThread) {
           //create comment thread
           const newCommentThreadId = await createCommentThread({
             comments: [newComment],
@@ -128,18 +102,16 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
           const success = await addCommentThreadToCurrentDoc(
             newCommentThreadId
           );
+          initializeCommentThread(newCommentThreadId);
         } else {
           // view mode
           // add comment to thread
-          const success = await addCommentToCommentThread(
-            newComment,
-            commentThreadId
-          );
+          const success = await addCommentToCommentThread(newComment, id);
         }
 
         resetForm();
         // also notify user that the comment was added
-        onClose();
+        handleClose();
       },
     });
 
@@ -152,10 +124,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
     >
       <Button
         onClick={() => {
-          if (
-            mode === MODE.ADD &&
-            canCreateCommentThreadOnSelection(selection)
-          ) {
+          if (isNewThread && canCreateCommentThreadOnSelection(selection)) {
             createTempCommentThread(selection);
             updateSelection(null);
           } else {
@@ -169,7 +138,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
       <Drawer isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
+          <DrawerCloseButton onClick={handleClose} />
           <DrawerHeader>Add a comment</DrawerHeader>
 
           <DrawerBody>

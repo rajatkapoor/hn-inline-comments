@@ -28,7 +28,11 @@ export const getCommentThread = async (id) => {
     };
   }
 };
-export const getAllCommentsInCommentThred = async (id) => {
+export const getAllCommentsInCommentThread = async (id) => {
+  console.log(
+    "🚀 ~ file: commentThread.service.js ~ line 32 ~ getAllCommentsInCommentThread ~ id",
+    id
+  );
   const { commentThread } = await getCommentThread(id);
   const comments = await Promise.all(
     commentThread.comments.map(async (comment) => {

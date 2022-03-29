@@ -9,6 +9,7 @@ import CommentsDrawer, { CommentsDrawerProvider } from "./CommentsDrawer";
 import CommentSpan from "./CommentSpan";
 import WithInlineComments from "./WithInlineComments";
 import { SelectionProvider } from "../stores/selection.store";
+import { CommentThreadProvider } from "../stores/commentThread.store";
 
 const Preview = () => {
   const {
@@ -24,38 +25,40 @@ const Preview = () => {
 
   return (
     <SelectionProvider>
-      <CommentsDrawerProvider>
-        <Box>
-          <Box className="post-preview">
-            <Remark
-              key={content}
-              remarkPlugins={[remarkDirective, hashnodeCommentPlugin]}
-              remarkToRehypeOptions={{ allowDangerousHtml: true }}
-              rehypeReactOptions={{
-                passNode: true,
-                components: {
-                  p: ({ node, ...props }) => {
-                    return WithInlineComments(node, props);
+      <CommentThreadProvider>
+        <CommentsDrawerProvider>
+          <Box>
+            <Box className="post-preview">
+              <Remark
+                key={content}
+                remarkPlugins={[remarkDirective, hashnodeCommentPlugin]}
+                remarkToRehypeOptions={{ allowDangerousHtml: true }}
+                rehypeReactOptions={{
+                  passNode: true,
+                  components: {
+                    p: ({ node, ...props }) => {
+                      return WithInlineComments(node, props);
+                    },
+                    strong: ({ node, ...props }) => {
+                      return WithInlineComments(node, props);
+                    },
+                    ["hn-comment-thread"]: ({ node, ...props }) => {
+                      return <CommentSpan {...props} />;
+                    },
                   },
-                  strong: ({ node, ...props }) => {
-                    return WithInlineComments(node, props);
-                  },
-                  ["hn-comment-thread"]: ({ node, ...props }) => {
-                    return <CommentSpan {...props} />;
-                  },
-                },
-              }}
-            >
-              {content}
-            </Remark>
-          </Box>
+                }}
+              >
+                {content}
+              </Remark>
+            </Box>
 
-          <CommentsDrawer
-            addCommentThreadToCurrentDoc={addCommentThreadToCurrentDoc}
-            buttonText="View Comments"
-          />
-        </Box>
-      </CommentsDrawerProvider>
+            <CommentsDrawer
+              addCommentThreadToCurrentDoc={addCommentThreadToCurrentDoc}
+              buttonText="View Comments"
+            />
+          </Box>
+        </CommentsDrawerProvider>
+      </CommentThreadProvider>
     </SelectionProvider>
   );
 };
