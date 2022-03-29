@@ -21,7 +21,7 @@ import {
 import createTempCommentThread from "../utils/createTempCommentThread";
 import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
 import { useSelection } from "../stores/selection.store";
-
+import CommentInput from "./CommentInput";
 export const CommentsDrawerContext = createContext();
 export const MODE = {
   ADD: "ADD",
@@ -149,14 +149,11 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc }) => {
           <DrawerHeader>Add a comment</DrawerHeader>
 
           <DrawerBody>
-            <form id="my-form" onSubmit={handleSubmit}>
-              <Input
-                name="text"
-                placeholder="Type comment here..."
-                defaultValue={values.text}
-                onChange={handleChange}
-              />
-            </form>
+            <CommentInput
+              handleChange={handleChange}
+              handleSubmit={handleSubmit}
+              defaultValue={values.text}
+            />
           </DrawerBody>
 
           <DrawerFooter>
