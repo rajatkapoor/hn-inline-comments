@@ -1,15 +1,13 @@
 // import { h } from "hastscript";
-import { Box, Portal } from "@chakra-ui/react";
-import React, { useState, useContext } from "react";
-import CommentsDrawer, { CommentsDrawerContext } from "./CommentsDrawer";
+import React, { useContext } from "react";
 import canCreateCommentOnSelection from "../utils/canCreateCommentOnSelection";
 import createTempComment from "../utils/createTempComment";
+import { CommentsDrawerContext } from "./CommentsDrawer";
 
 // eslint-disable-next-line react/display-name
 const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
   const commentDrawerContext = useContext(CommentsDrawerContext);
-  const { commentButtonPosition, setCommentButtonPosition } =
-    commentDrawerContext;
+  const { showCommentButton } = commentDrawerContext;
 
   const onMouseDown = (e) => {
     //@todo: Add some details somewhere to capture the current node
@@ -24,7 +22,7 @@ const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
 
     if (canCreateCommentOnSelection()) {
       const rect = createTempComment(commentSpan);
-      setCommentButtonPosition([rect.top - 50, rect.left]);
+      showCommentButton("Add comments", [rect.top - 50, rect.left]);
     }
   };
 

@@ -12,21 +12,39 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useRef } from "react";
 import { postComment } from "../services/comment.service";
 
 export const CommentsDrawerContext = createContext();
 
 export const CommentsDrawerProvider = ({ children, id, post }) => {
-  const [commentButtonPosition, setCommentButtonPosition] = useState([
-    -1000, 1000,
-  ]);
+  const hiddenPosition = [-1000, 1000];
+  const [buttonText, setButtonText] = useState("Add Comments");
+  const [commentButtonPosition, setCommentButtonPosition] =
+    useState(hiddenPosition);
+
+  let timeoutHandle = useRef(null);
+  const showCommentButton = (text, [top, right], autoHide = false) => {
+    clearTimeout(timeoutHandle.current);
+    setButtonText(text);
+    setCommentButtonPosition([top, right]);
+    if (autoHide) {
+      timeoutHandle.current = setTimeout(() => {
+        hideCommentButton();
+      }, 2000);
+    }
+  };
+  const hideCommentButton = () => {
+    setCommentButtonPosition(hiddenPosition);
+  };
 
   return (
     <CommentsDrawerContext.Provider
       value={{
         commentButtonPosition,
-        setCommentButtonPosition,
+        buttonText,
+        showCommentButton,
+        hideCommentButton,
       }}
     >
       {children}
@@ -34,17 +52,14 @@ export const CommentsDrawerProvider = ({ children, id, post }) => {
   );
 };
 
-const CommentsDrawer = ({
-  buttonText = "Add Comments",
-  addCommentToCurrentDoc,
-}) => {
+const CommentsDrawer = ({ addCommentToCurrentDoc }) => {
   const context = useContext(CommentsDrawerContext);
   if (!context) {
     throw new Error(
       "CommentsDrawer must be used within a CommentsDrawerProvider"
     );
   }
-  const { commentButtonPosition, setCommentButtonPosition } = context;
+  const { commentButtonPosition, buttonText } = context;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { values, handleChange, handleSubmit, setFieldValue, resetForm } =
