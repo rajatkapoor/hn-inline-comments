@@ -36,18 +36,10 @@ const Preview = () => {
               passNode: true,
               components: {
                 p: ({ node, ...props }) => {
-                  return WithInlineComments(
-                    node,
-                    props,
-                    addCommentToCurrentDoc
-                  );
+                  return WithInlineComments(node, props);
                 },
                 strong: ({ node, ...props }) => {
-                  return WithInlineComments(
-                    node,
-                    props,
-                    addCommentToCurrentDoc
-                  );
+                  return WithInlineComments(node, props);
                 },
                 ["hn-comment-thread"]: ({ node, ...props }) => {
                   return <CommentSpan {...props} />;

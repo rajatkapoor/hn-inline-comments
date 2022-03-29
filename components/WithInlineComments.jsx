@@ -5,7 +5,7 @@ import createTempCommentThread from "../utils/createTempCommentThread";
 import { CommentsDrawerContext } from "./CommentsDrawer";
 
 // eslint-disable-next-line react/display-name
-const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
+const WithInlineComments = (node, props) => {
   const commentDrawerContext = useContext(CommentsDrawerContext);
   const { showCommentButton } = commentDrawerContext;
 
