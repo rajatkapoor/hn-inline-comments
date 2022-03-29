@@ -1,8 +1,13 @@
-const createTempComment = (commentSpanElement) => {
+const createTempComment = () => {
+  const commentSpan = document.createElement("span");
+
+  commentSpan.dataset.commentId = "temp";
+  commentSpan.style.backgroundColor = "pink";
+
   const sel = window.getSelection();
   const range = sel.getRangeAt(0).cloneRange();
   const rect = range.getBoundingClientRect();
-  range.surroundContents(commentSpanElement);
+  range.surroundContents(commentSpan);
   sel.removeAllRanges();
   sel.addRange(range);
   return rect;

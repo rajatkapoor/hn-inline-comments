@@ -15,14 +15,13 @@ const WithInlineComments = (node, props, addCommentToCurrentDoc) => {
 
   const onMouseUp = async (e) => {
     //@todo: Check whether this ends up being in the same node and if commenting is possible
-    const commentSpan = document.createElement("span");
-
-    commentSpan.dataset.commentId = "temp";
-    commentSpan.style.backgroundColor = "blue";
 
     if (canCreateCommentOnSelection()) {
-      const rect = createTempComment(commentSpan);
-      showCommentButton("Add comments", [rect.top - 50, rect.left]);
+      // const rect = createTempComment(commentSpan);
+      const sel = window.getSelection();
+      const range = sel.getRangeAt(0).cloneRange();
+      const rect = range.getBoundingClientRect();
+      showCommentButton("Add comments", [rect.top - 50, rect.left], 5000);
     }
   };
 
