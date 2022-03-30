@@ -10,7 +10,7 @@ import { Router, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
 import useLoading from "../hooks/useLoading";
-import { getPosts, createPost } from "../services/post.service";
+import { getPosts, createPost, deletePost } from "../services/post.service";
 
 export default function Home() {
   const { isLoading, stopLoading } = useLoading();
@@ -28,6 +28,10 @@ export default function Home() {
       router.push(`/drafts/${post.id}`);
     });
   };
+  const handleDeletePost = async (id) => {
+    setPosts(posts.filter((post) => post.id !== id));
+    await deletePost(id);
+  };
 
   return (
     <Stack>
@@ -40,7 +44,9 @@ export default function Home() {
       <Stack divider={<StackDivider />}>
         {!isLoading &&
           posts.map((post) => {
-            return <PostCard key={post.id} {...post} />;
+            return (
+              <PostCard key={post.id} {...post} deletePost={handleDeletePost} />
+            );
           })}
       </Stack>
     </Stack>

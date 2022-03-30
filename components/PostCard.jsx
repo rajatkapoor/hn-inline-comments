@@ -2,7 +2,7 @@ import { Button, Heading, HStack, Stack, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 
-const PostCard = ({ id, content }) => {
+const PostCard = ({ id, deletePost }) => {
   const router = useRouter();
   return (
     <HStack key={id} justifyContent="space-between" my={4}>
@@ -21,7 +21,7 @@ const PostCard = ({ id, content }) => {
         <Button
           variant={"ghost"}
           colorScheme="red"
-          onClick={() => alert("not implemented")}
+          onClick={() => deletePost(id)}
         >
           Delete
         </Button>

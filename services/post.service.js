@@ -5,6 +5,7 @@ import {
   getDocs,
   setDoc,
   addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db, postsCollection } from "../utils/firebase";
 
@@ -35,5 +36,11 @@ export const getPost = async (id) => {
 export const updatePost = async (id, post) => {
   const docRef = doc(db, "posts", id);
   await updateDoc(docRef, post);
+  return true;
+};
+
+export const deletePost = async (id) => {
+  const docRef = doc(db, "posts", id);
+  await deleteDoc(docRef);
   return true;
 };
