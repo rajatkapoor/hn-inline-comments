@@ -1,8 +1,11 @@
 /// <reference types="cypress"/>
-
 context("Home Page", () => {
   beforeEach(() => {
     cy.visit("/");
+  });
+
+  after(() => {
+    cy.clearFirebase();
   });
 
   it("should render the home page with the create post button", () => {
