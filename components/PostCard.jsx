@@ -8,9 +8,6 @@ const PostCard = ({ id, content }) => {
     <HStack key={id} justifyContent="space-between" my={4}>
       <Stack>
         <Heading size={"md"}>{id}</Heading>
-        <Text isTruncated width={"md"}>
-          {content}
-        </Text>
       </Stack>
       <HStack>
         <Button

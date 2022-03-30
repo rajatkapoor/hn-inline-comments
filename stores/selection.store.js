@@ -46,6 +46,9 @@ export const useSelection = () => {
 
   const selectionChangeHandler = (e) => {
     const selection = document.getSelection();
+    if (!selection || selection.isCollapsed || selection.rangeCount <= 0) {
+      clearSelection();
+    }
     const range = selection.getRangeAt(0);
 
     if (

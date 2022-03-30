@@ -13,7 +13,6 @@ import React, { createContext, useContext } from "react";
 import { createComment } from "../services/comment.service";
 import { useCommentThread } from "../stores/commentThread.store";
 import { useSelection } from "../stores/selection.store";
-import canCreateCommentThreadOnSelection from "../utils/canCreateCommentThreadOnSelection";
 import clearTempCommentThreads from "../utils/clearTempCommentThreads";
 import createTempCommentThread from "../utils/createTempCommentThread";
 import CommentInputForm from "./CommentInputForm";
@@ -71,7 +70,7 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc, acceptSuggestion }) => {
     }
   };
   const handleAddCommentButtonClick = () => {
-    if (isNewThread() && canCreateCommentThreadOnSelection(selection)) {
+    if (isNewThread()) {
       createTempCommentThread(selection);
       updateSelection(null);
     }

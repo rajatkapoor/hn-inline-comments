@@ -18,7 +18,7 @@ import Preview from "../../components/Preview";
 import { getPost } from "../../services/post.service";
 import { PostProvider } from "../../stores/post.store";
 
-const EditPage = () => {
+const DraftPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [post, setPost] = useState(null);
@@ -64,4 +64,4 @@ const EditPage = () => {
   );
 };
 
-export default EditPage;
+export default DraftPage;
