@@ -37,7 +37,9 @@ export default function Home() {
     <Stack>
       <HStack>
         <Heading>Your posts</Heading>
-        <Button onClick={handleCreatePost}>Create new post</Button>
+        <Button onClick={handleCreatePost} data-cy="create-new-post-button">
+          Create new post
+        </Button>
       </HStack>
 
       {isLoading && <Spinner />}

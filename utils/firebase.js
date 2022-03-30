@@ -14,8 +14,18 @@ const firebaseConfig = {
   appId: "1:150064763336:web:7246f8320c71d1002630fd",
 };
 
+const firebaseTestConfig = {
+  apiKey: "AIzaSyBO_aktoHqlnHx7nTrgBu0Y7tGP5bq6E2E",
+  authDomain: "hashnode-inline-comments-test.firebaseapp.com",
+  projectId: "hashnode-inline-comments-test",
+  storageBucket: "hashnode-inline-comments-test.appspot.com",
+  messagingSenderId: "634349994471",
+  appId: "1:634349994471:web:19419c910f1cffa7b57d42",
+};
+const finalConfig =
+  process.env.NODE_ENV === "test" ? firebaseTestConfig : firebaseConfig;
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig);
+export const app = initializeApp(finalConfig);
 export const db = getFirestore(app);
 export const postsCollection = collection(db, "posts");
 export const commentsCollection = collection(db, "comments");

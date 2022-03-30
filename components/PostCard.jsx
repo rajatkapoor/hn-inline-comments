@@ -5,7 +5,7 @@ import React from "react";
 const PostCard = ({ id, deletePost }) => {
   const router = useRouter();
   return (
-    <HStack key={id} justifyContent="space-between" my={4}>
+    <HStack key={id} justifyContent="space-between" my={4} data-cy="post-card">
       <Stack>
         <Heading size={"md"}>{id}</Heading>
       </Stack>
@@ -22,6 +22,7 @@ const PostCard = ({ id, deletePost }) => {
           variant={"ghost"}
           colorScheme="red"
           onClick={() => deletePost(id)}
+          data-cy="delete-post-button"
         >
           Delete
         </Button>
