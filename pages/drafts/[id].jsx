@@ -15,7 +15,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Editor from "../../components/Editor";
 import Preview from "../../components/Preview";
-import Title from "../../components/Title";
 import { getPost } from "../../services/post.service";
 import { PostProvider } from "../../stores/post.store";
 
