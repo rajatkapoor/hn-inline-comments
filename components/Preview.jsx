@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { Remark } from "react-remark";
 import remarkDirective from "remark-directive";
@@ -17,23 +17,25 @@ const Preview = () => {
     id,
     updateContent,
   } = usePost();
+  const toast = useToast();
 
   const addCommentThreadToCurrentDoc = async (commentThreadId) => {
-    console.log(
-      "🚀 ~ file: Preview.jsx ~ line 22 ~ addCommentThreadToCurrentDoc ~ commentThreadId",
-      commentThreadId
-    );
     const content = await getMarkdownFromHTML(commentThreadId);
     await updateContent(id, content);
+    toast({
+      title: "Comment added",
+      status: "success",
+      duration: 3000,
+    });
   };
   const acceptSuggestion = async (commentThreadId, comment) => {
-    console.log(
-      "🚀 ~ file: Preview.jsx ~ line 26 ~ acceptSuggestion ~ commentThreadId, comment",
-      commentThreadId,
-      comment
-    );
     const content = await getMarkdownFromHTML(commentThreadId, comment.text);
     await updateContent(id, content);
+    toast({
+      title: "Suggestion accepted",
+      status: "success",
+      duration: 3000,
+    });
   };
 
   return (
