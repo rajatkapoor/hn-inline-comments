@@ -7,6 +7,8 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Button,
+  Flex,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
@@ -34,7 +36,10 @@ const EditPage = () => {
   }, [id]);
 
   return (
-    <Box>
+    <Stack spacing={4}>
+      <Flex>
+        <Button onClick={() => router.push("/")}>Go back to all drafts</Button>
+      </Flex>
       {!post && <Spinner />}
       {post && (
         <PostProvider id={id} post={post}>
@@ -56,7 +61,7 @@ const EditPage = () => {
           </Stack>
         </PostProvider>
       )}
-    </Box>
+    </Stack>
   );
 };
 

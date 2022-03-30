@@ -21,7 +21,11 @@ const PostCard = ({ id, content }) => {
         >
           Continue writing
         </Button>
-        <Button variant={"ghost"} colorScheme="red">
+        <Button
+          variant={"ghost"}
+          colorScheme="red"
+          onClick={() => alert("not implemented")}
+        >
           Delete
         </Button>
       </HStack>
