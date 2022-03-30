@@ -1,25 +1,21 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import { collection, query, getDocs, deleteDoc } from "firebase/firestore";
+import { db } from "../../utils/firebase";
+
+const dropCollection = async (collectionName) => {
+  const q = query(collection(db, collectionName));
+  const querySnapshot = await getDocs(q);
+
+  const deleteOps = [];
+
+  querySnapshot.forEach((doc) => {
+    deleteOps.push(deleteDoc(doc.ref));
+  });
+
+  Promise.all(deleteOps).then(() => console.log("documents deleted"));
+};
+
+Cypress.Commands.add("clearFirebase", async () => {
+  await dropCollection("posts");
+  await dropCollection("comments");
+  await dropCollection("commentThreads");
+});
