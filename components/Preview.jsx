@@ -57,6 +57,15 @@ const Preview = () => {
                     strong: ({ node, ...props }) => {
                       return WithInlineComments(node, props);
                     },
+                    h1: ({ node, ...props }) => {
+                      return WithInlineComments(node, props);
+                    },
+                    h2: ({ node, ...props }) => {
+                      return WithInlineComments(node, props);
+                    },
+                    h3: ({ node, ...props }) => {
+                      return WithInlineComments(node, props);
+                    },
                     ["hn-comment-thread"]: ({ node, ...props }) => {
                       return <CommentSpan {...props} />;
                     },
