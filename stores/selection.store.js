@@ -46,7 +46,17 @@ export const useSelection = () => {
 
   const selectionChangeHandler = (e) => {
     const selection = document.getSelection();
-    updateSelection(selection);
+    const range = selection.getRangeAt(0);
+
+    if (
+      range &&
+      range.startContainer.parentElement == range.endContainer.parentElement &&
+      range.cloneContents().childElementCount === 0
+    ) {
+      updateSelection(selection);
+    } else {
+      updateSelection(null);
+    }
   };
 
   useEffect(() => {
