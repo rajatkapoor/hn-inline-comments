@@ -41,10 +41,11 @@ const Editor = () => {
         }}
         ref={editorRef}
         style={{
-          border: "1px solid red",
-          height: "500px",
-          padding: "10px",
+          height: "30vh",
+          padding: "1em",
         }}
+        border="1px solid black"
+        rounded={"sm"}
       />
       <Button onClick={handleSaveClick}>save</Button>
     </Stack>

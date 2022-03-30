@@ -1,5 +1,16 @@
-import { getDoc, doc, updateDoc, getDocs, setDoc } from "firebase/firestore";
+import {
+  getDoc,
+  doc,
+  updateDoc,
+  getDocs,
+  setDoc,
+  addDoc,
+} from "firebase/firestore";
 import { db, postsCollection } from "../utils/firebase";
+
+export const createPost = () => {
+  return addDoc(postsCollection, { content: "this is a new post" });
+};
 
 export const getPosts = async () => {
   const querySnapshot = await getDocs(postsCollection);

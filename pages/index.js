@@ -1,14 +1,21 @@
-import { Heading, Spinner, Stack, StackDivider } from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import {
+  Button,
+  Heading,
+  HStack,
+  Spinner,
+  Stack,
+  StackDivider,
+} from "@chakra-ui/react";
+import { Router, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
 import useLoading from "../hooks/useLoading";
-import { getPosts } from "../services/post.service";
+import { getPosts, createPost } from "../services/post.service";
 
 export default function Home() {
   const { isLoading, stopLoading } = useLoading();
   const [posts, setPosts] = useState([]);
-
+  const router = useRouter();
   useEffect(() => {
     getPosts().then((posts) => {
       setPosts(posts);
@@ -16,9 +23,19 @@ export default function Home() {
     });
   }, []);
 
+  const handleCreatePost = () => {
+    createPost().then((post) => {
+      router.push(`/drafts/${post.id}`);
+    });
+  };
+
   return (
     <Stack>
-      <Heading>Your posts</Heading>
+      <HStack>
+        <Heading>Your posts</Heading>
+        <Button onClick={handleCreatePost}>Create new post</Button>
+      </HStack>
+
       {isLoading && <Spinner />}
       <Stack divider={<StackDivider />}>
         {!isLoading &&

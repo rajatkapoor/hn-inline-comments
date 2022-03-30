@@ -24,7 +24,6 @@ const EditPage = () => {
   useEffect(() => {
     if (id === "new") {
       setPost({
-        title: "",
         content: "",
       });
     } else if (id) {
@@ -40,8 +39,7 @@ const EditPage = () => {
       {post && (
         <PostProvider id={id} post={post}>
           <Stack>
-            <Title></Title>
-            <Tabs>
+            <Tabs variant={"soft-rounded"}>
               <TabList>
                 <Tab>Write</Tab>
                 <Tab>Preview</Tab>
