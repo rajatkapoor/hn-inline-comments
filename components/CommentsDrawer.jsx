@@ -88,13 +88,20 @@ const CommentsDrawer = ({ addCommentThreadToCurrentDoc, acceptSuggestion }) => {
       left={position[1]}
       zIndex={100}
     >
-      <Button onClick={handleAddCommentButtonClick} pos="relative">
+      <Button
+        onClick={handleAddCommentButtonClick}
+        pos="relative"
+        data-cy="add-comment-button"
+      >
         Add comments
       </Button>
-      <Drawer isOpen={isOpen} onClose={onClose}>
+      <Drawer isOpen={isOpen} onClose={onClose} data-cy="comment-drawer">
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton onClick={handleClose} />
+          <DrawerCloseButton
+            onClick={handleClose}
+            data-cy="comment-drawer-close-button"
+          />
           <DrawerHeader>Add a comment</DrawerHeader>
 
           <DrawerBody>

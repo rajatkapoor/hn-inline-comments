@@ -5,10 +5,14 @@ const CommentThread = ({ comments, acceptSuggestion }) => {
   return (
     <Stack spacing={2}>
       {comments.map((comment) => (
-        <HStack key={comment.id} px={2} shadow="md">
+        <HStack key={comment.id} px={2} shadow="md" data-cy="comment-card">
           <Text>{comment.text}</Text>
           {comment.isSuggestion && (
-            <Button size={"sm"} onClick={() => acceptSuggestion(comment)}>
+            <Button
+              size={"sm"}
+              onClick={() => acceptSuggestion(comment)}
+              data-cy="accept-suggestion-button"
+            >
               Accept suggestion
             </Button>
           )}

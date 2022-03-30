@@ -46,8 +46,11 @@ const Editor = () => {
         }}
         border="1px solid black"
         rounded={"sm"}
+        data-cy="editor"
       />
-      <Button onClick={handleSaveClick}>save</Button>
+      <Button onClick={handleSaveClick} data-cy="save-button">
+        save
+      </Button>
     </Stack>
   );
 };

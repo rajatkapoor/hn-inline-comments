@@ -45,8 +45,8 @@ const DraftPage = () => {
           <Stack>
             <Tabs variant={"soft-rounded"}>
               <TabList>
-                <Tab>Write</Tab>
-                <Tab>Preview</Tab>
+                <Tab data-cy="write">Write</Tab>
+                <Tab data-cy="preview">Preview</Tab>
               </TabList>
               <TabPanels>
                 <TabPanel>

@@ -21,15 +21,19 @@ const CommentInputForm = ({ onCommentSubmit }) => {
           placeholder="Type comment here..."
           value={values.text}
           onChange={handleChange}
+          data-cy="comment-input"
         />
         <Checkbox
           name="isSuggestion"
           checked={values.isSuggestion}
           onChange={handleChange}
+          data-cy="is-suggestion-checkbox"
         >
           Is a suggestion
         </Checkbox>
-        <Button type="submit">Save</Button>
+        <Button type="submit" data-cy="save-comment-button">
+          Save
+        </Button>
       </Stack>
     </form>
   );
