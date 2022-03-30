@@ -10,6 +10,7 @@ import CommentSpan from "./CommentSpan";
 import WithInlineComments from "./WithInlineComments";
 import { SelectionProvider } from "../stores/selection.store";
 import { CommentThreadProvider } from "../stores/commentThread.store";
+import nodesSupportingComments from "../config";
 
 const Preview = () => {
   const {
@@ -37,6 +38,14 @@ const Preview = () => {
       duration: 3000,
     });
   };
+  const components = nodesSupportingComments.reduce((obj, item) => {
+    return {
+      ...obj,
+      [item]: ({ node, ...props }) => {
+        return WithInlineComments(node, props);
+      },
+    };
+  }, {});
 
   return (
     <SelectionProvider>
@@ -51,21 +60,7 @@ const Preview = () => {
                 rehypeReactOptions={{
                   passNode: true,
                   components: {
-                    p: ({ node, ...props }) => {
-                      return WithInlineComments(node, props);
-                    },
-                    strong: ({ node, ...props }) => {
-                      return WithInlineComments(node, props);
-                    },
-                    h1: ({ node, ...props }) => {
-                      return WithInlineComments(node, props);
-                    },
-                    h2: ({ node, ...props }) => {
-                      return WithInlineComments(node, props);
-                    },
-                    h3: ({ node, ...props }) => {
-                      return WithInlineComments(node, props);
-                    },
+                    ...components,
                     ["hn-comment-thread"]: ({ node, ...props }) => {
                       return <CommentSpan {...props} />;
                     },
